@@ -162,19 +162,56 @@ un número de empleado ya registrado (control de unicidad).}
     if encontre = false then
       writeln('Ingresaste un numero de empleado que no existe');
   end;
+  
+  {c. Exportar el contenido del archivo a un archivo de texto llamado
+“todos_empleados.txt”.}
 
+  procedure exportarContenido(var empleados:archivo_empleados);
+  var
+    txt:text; //archivo de texto
+    emp:empleado;
+  begin
+    assign(txt,'todos_empleados.txt');
+    rewrite(txt); //crea el archivo de texto
+    while not eof(empleados) do begin
+      read(empleados,emp);//lee empleado del archivo binario
+      writeln(txt,emp.nro,' ',emp.age,' ',emp.DNI,' ',emp.ape,' ',emp.nom);
+    end;
+    close(txt);
+  end;
+  
+  {d. Exportar a un archivo de texto llamado: “faltaDNIEmpleado.txt”, los empleados
+que no tengan cargado el DNI (DNI en 00).}
+  
+  procedure exportarDNIempleados(var empleados:archivo_empleados);
+  var
+    txt:text; //archivo de texto
+    emp:empleado;
+  begin
+    assign(txt, 'faltaDNIEmpleado.txt');
+    rewrite(txt);
+    while not eof(empleados) do begin
+      read(empleados,emp);//lee empleado del archivo binario
+      if (emp.DNI = 00) then
+        writeln(txt,emp.nro,' ',emp.age,' ',emp.DNI,' ',emp.ape,' ',emp.nom);
+    end;
+    close(txt);
+  end;
+  
   procedure interactArchivo(var empleados:archivo_empleados);
   var
     opcion: char;
   begin
     opcion:= '0';
-    while (opcion <> '6') do begin
+    while (opcion <> '8') do begin
       writeln('Ingrese 1 si desea ver los datos de los empleados que usted decida');
       writeln('Ingrese 2 si desea ver los datos de los empleados de a uno por linea');
       writeln('Ingrese 3 si desea ver los datos de los empleados mayores a 70 años');
       writeln('Ingrese 4 si desea agregar empleados al archivo');
       writeln('Ingrese 5 si desea modificar la edad de un empleado dado');
-      writeln('Ingrese 6 si desea volver al menu principal');
+      writeln('Ingrese 6 si desea exportar el contenido del archivo a un archivo de texto llamado “todos_empleados.txt');
+      writeln('Ingrese 7 si desea exportar a un archivo de texto llamado: “faltaDNIEmpleado.txt”, los empleados que no tengan cargado el DNI');
+      writeln('Ingrese 8 si desea volver al menu principal');
       readln(opcion);
       reset(empleados);
       case opcion of
@@ -183,6 +220,8 @@ un número de empleado ya registrado (control de unicidad).}
         '3': listarmayoresa70(empleados);
         '4': agregarEmpleado(empleados);
         '5': modificarEdad(empleados);
+        '6': exportarContenido(empleados);
+        '7': exportarDNIempleados(empleados);
       end;
       close(empleados);
     end;
