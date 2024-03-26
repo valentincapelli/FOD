@@ -27,9 +27,9 @@ type
     cel:celular;
     carga: Text; {Archivo de texto con datos de los celulares, se lee de el y se genera un archivo binario}
   begin
-    writeln('Nombre del archivo binario de celulares'); {nombre del archivo que quiero crear}
-    readln(nomBin);
-    assign(celulares,nomBin);
+    //writeln('Nombre del archivo binario de celulares'); {nombre del archivo que quiero crear}
+    //readln(nomBin);
+    //assign(celulares,nomBin);
     rewrite(celulares); {crea el nuevo archivo binario}
       
     assign(carga,'celulares.txt');
@@ -48,17 +48,13 @@ type
   
   procedure informarCel(cel:celular);
   begin
-    writeln('Codigo: ',cel.cod,' Nombre: ',cel.nom,' Desc: ',cel.desc,' Marca: ',cel.marca,' Precio: ',cel.precio,' Stock min: ',cel.stockMin,' Stock: ', cel.stock);
+    writeln('Codigo: ',cel.cod,' Nombre: ',cel.nom,' Desc: ',cel.desc,' Marca: ',cel.marca,' Precio: ',cel.precio:0:2,' Stock min: ',cel.stockMin,' Stock: ', cel.stock);
   end;
   
   procedure listarStockPorDebajo(var celulares:archivo_celulares);
   var
     cel:celular;
-    nomBin:string;
   begin
-    //write('Ingrese el nombre del archivo binario de celulares: ');
-   // read(nomBin);
-   /// assign(celulares, nomBin);
     reset(celulares);
     while not eof(celulares) do begin
       read(celulares, cel);
@@ -71,37 +67,42 @@ type
   procedure listarCadenaEspecial(var celulares:archivo_celulares);
   var
     cel:celular;
-    nomBin, desc:string;
+    desc:string;
+    posicion:integer;
   begin
-    write('Ingrese el nombre del archivo binario de celulares: ');
-    read(nomBin);
     writeln('Ingrese la descripcion que busca');
     read(desc);
-    assign(celulares, nomBin);
     reset(celulares);
     while not eof(celulares) do begin
       read(celulares, cel);
-      if (cel.desc = desc) then
-        informarCel(cel);
+      posicion := Pos(desc, cel.desc);
+      if (posicion <> 0) then
+        informarCel(cel)
+      else
+        writeln('No se encuentra esa descripcion');
     end;
     close(celulares);
   end;
   
 var
   celulares: archivo_celulares;
-  opc: Byte;
+  opc: char;
+  nomBin:string;
 begin
   repeat
+    writeln('Nombre del archivo binario de celulares'); {nombre del archivo que quiero crear}
+    readln(nomBin);
     writeln('0 Terminar el programa');
     writeln('1. Crear un archivo binario de celulares desde un archivo de texto');
     writeln('2. Listar en pantalla los datos de aquellos celulares que tengan un stock menor al stock minimo');
     writeln('3. Listar en pantalla los datos de aquellos celulares con descripcion especial');
     readln(opc);
+    assign(celulares,nomBin);
     case opc of
-      1: cargarArchivoBinario(celulares);
-      2: listarStockPorDebajo(celulares);
-      3: listarCadenaEspecial(celulares);
+      '1': cargarArchivoBinario(celulares);
+      '2': listarStockPorDebajo(celulares);
+      '3': listarCadenaEspecial(celulares);
       else writeln('Error. Elija una opcion valida.');
     end;
-  until opc = 0;
+  until opc = '0';
 end.
