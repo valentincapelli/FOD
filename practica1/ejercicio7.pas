@@ -26,18 +26,15 @@ type
   var
     n:novela;
     archText:text;
-    nomArchText, nomArchNovelas:string[20];
+    //nomArchText, nomArchNovelas:string[20];
   begin
-    writeln('Nombre del archivo de novelas');
-    readln(nomArchNovelas);
-    assign(novelas,nomArchNovelas);
+    //writeln('Nombre del archivo de texto');
+    //readln(nomArchText);
+    //assign(archText,nomArchText);
+    assign(archText,'novelas.txt'); {dejo por defualt que cree el archivo binario a partir de novelas.txt}
+    reset(archText);  {abro el archivo de texto} 
     
-    writeln('Nombre del archivo de texto');
-    readln(nomArchText);
-    assign(archText,nomArchText);
-    
-    reset(archText);
-    rewrite(novelas);
+    rewrite(novelas); {crea el archivo binario}
     
     while (not eof(archText)) do begin
       readln(archText, n.codigo, n.precio, n.genero);
@@ -45,24 +42,55 @@ type
       write(novelas,n);
     end;
     writeln('Archivo binario cargado.');
-    readln;
     close(archText);
     close(novelas);
   end;
   
-  procedure modificarNovela(var novelas:archivo_novelas):
+  procedure leerNovela(var n:novela);
+  begin
+    writeln('Ingrese el codigo');
+    readln(n.codigo);
+    writeln('Ingrese el nombre');
+    readln(n.nombre);
+    writeln('Ingrese el genero');
+    readln(n.genero);
+    writeln('Ingrese el precio');
+    readln(n.precio);
+  end;
+  
+  procedure agregarNovela(var novelas:archivo_novelas);
+  var
+    n:novela;
+  begin
+    writeln('Ingrese la informacion de la nueva novela');
+    leerNovela(n);
+    reset(novelas);
+    seek(novelas, filesize(novelas));
+    write(novelas, n);
+    writeln('Se agrego la nueva novela al archivo');
+    close(novelas);
+  end;
+  
+  procedure modificarNovela(var novelas:archivo_novelas);
   var
     cod:integer;
+    encontre:boolean;
+    n:novela;
   begin
-    writeln('Ingrese el codigo de novela que desea modificar');
+    writeln('Ingrese el codigo de la novela que desea modificar');
     readln(cod);
+    writeln('Ingrese la informacion de la novela que quiere modificar');
+    leerNovela(n);
+    
     reset(novelas);
     encontre:= false;
     while (not eof(novelas)) and (encontre = false) do begin
       read(novelas, n);
       if (n.codigo = cod) then begin
-        // codigo para modificar novela
-        encontre = true;
+        seek(novelas, filepos(novelas)-1);
+        write(novelas,n);
+        encontre := true;
+        writeln('Archivo modificado');
       end;
     end;
     close(novelas);
@@ -70,39 +98,60 @@ type
   
   procedure actualizarArchivoBinario(var novelas:archivo_novelas);
   var
-    cod:integer;
-    encontre:boolean;
-    n:novela;
     opt:string[5];
   begin
-    writeln('Ingrese 1 si quiere agregar una novela');
-    writeln('Ingrese 2 si quiere modificar una novela');
-    writeln('Ingrese 3 si desea salir');
-    readln(opt);
-    case opt of
-      '1': agregarNovela(novelas);
-      '2': modificarNovela(novelas);
-        
+    opt := '0';
+    while (opt <> '3') do begin
+      writeln('Ingrese 1 si quiere agregar una novela');
+      writeln('Ingrese 2 si quiere modificar una novela');
+      writeln('Ingrese 3 si desea salir');
+      readln(opt);
+      case opt of
+        '1': agregarNovela(novelas);
+        '2': modificarNovela(novelas);
+        '3': // no hace nada
+        else writeln('Ingrese una opcion valida');
+      end;
     end;
+  end;
+  
+  procedure listarNovelas(var novelas:archivo_novelas);
+  var
+    n:novela;
+  begin
+    reset(novelas);
+    while (not eof(novelas)) do begin
+      read(novelas,n);
+      writeln('Nombre ',n.nombre,' Codigo ',n.codigo,' Genero ',n.genero,' Precio ',n.precio:0:2);
+    end;
+    close(novelas);
   end;
   
 var
   opt:string[5];
   novelas:archivo_novelas;
+  nomBin:string;
 begin
-  opt:= 'd';
-  while (opt <> 'c') do begin
+  opt:= 'h';
+  while (opt <> 'z') do begin
     writeln('Novelas');
     writeln('Seleccione una opcion.');
-    writeln('Ingrese "a" si desea crear un archivo binario de novelas a partir de la información almacenada en un archivo de texto.');
+    writeln('Ingrese "a" si desea crear un archivo binario de novelas a partir de la información almacenada en novelas.txt.');
     writeln('Ingrese "b" si desea abrir el archivo binario y permitir la actualización del mismo.');
     writeln('Ingrese "c" si desea listar las novelas');
-    writeln('Ingrese "c" si desea salir');
+    writeln('Ingrese "z" si desea salir');
     readln(opt);
-    case opt of
-      'a': crearArchivoBinario(novelas);
-      'b': actualizarArchivoBinario(novelas);
-      'c': listarNovelas(novelas);
-    end
+    if (opt <> 'z') then begin
+      writeln('Nombre del archivo binario de novelas'); {nombre del archivo que quiero crear o interactuar}
+      readln(nomBin);
+      assign(novelas,nomBin); {Hago una sola vez el assign antes del case}
+      case opt of
+        'a': crearArchivoBinario(novelas);
+        'b': actualizarArchivoBinario(novelas);
+        'c': listarNovelas(novelas);
+        'z': // no hace nada
+        else writeln('Ingrese una opcion valida');
+      end;
+    end;
   end;
 end.
