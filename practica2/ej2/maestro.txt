@@ -1,0 +1,5 @@
+1 2 12    capelli valentin
+2 3 5    fabio torrejon
+3 3 5    fermin prida
+0 -2 2  
+0 0 0 
