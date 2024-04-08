@@ -63,19 +63,81 @@ type
     close(det);
   end;
   
-  //procedure actualizarMaestro(var mae:maestro; var det1,det2:detalle);
-  //procedure informarMaestro(mae);
+  procedure leer(var det:detalle; var regd:registroDetalle);
+  begin
+    if (not eof(det)) then
+      read(det,regd)
+    else
+      regd.provincia:= valoralto;
+  end;
+  
+  procedure minimo(var det1,det2:detalle; var r1,r2,min:registroDetalle);
+  begin
+    if (r1.provincia <= r2.provincia) then begin
+      min:= r1;
+      leer(det1,r1);
+    end
+    else begin
+      min:= r2;
+      leer(det2,r2);
+    end;
+  end;
+  
+  procedure actualizarMaestro(var mae:maestro; var det1,det2:detalle);
+  var
+    regd1,regd2,min:registroDetalle;
+    regm:registroMaestro;
+  begin
+    reset(det1);
+    reset(det2);
+    reset(mae);
+    regd1.codigoLocalidad:= 0;
+    regd2.codigoLocalidad:= 0;
+    leer(det1,regd1);
+    leer(det2,regd2);
+    minimo(det1,det2,regd1,regd2,min);
+    while (min.provincia <> valoralto) do begin
+      read(mae,regm);
+      while (regm.provincia <> min.provincia) do
+        read(mae,regm);
+      while (regm.provincia = min.provincia) do begin
+        regm.cantEncuestados:= regm.cantEncuestados + min.cantEncuestados;
+        regm.cantAlfabetizados:= regm.cantAlfabetizados + min.cantAlfabetizados;
+        minimo(det1,det2,regd1,regd2,min);
+      end;
+      seek(mae,filepos(mae)-1);
+      write(mae,regm);
+    end;
+    close(det1);
+    close(det2);
+    close(mae);
+    writeln('El maestro fue actualizado.');
+  end;
+  
+  procedure informarMaestro(var mae:maestro);
+  var
+    regm:registroMaestro;
+  begin
+    reset(mae);
+    while (not eof(mae)) do begin
+      read(mae,regm);
+      writeln('Provincia ', regm.provincia, ' Cantidad de personas alfabetizadas ', regm.cantAlfabetizados, ' Total de encuestados ', regm.cantEncuestados);
+    end;
+    close(mae);
+  end;
 var
   mae:maestro;
   det1,det2:detalle;
 begin
   assign(mae,'maestro');
   importarMaestro(mae);
+  
   assign(det1,'detalle1');
   importarDetalle(det1,'detalle1.txt');
+  
   assign(det2,'detalle2');
   importarDetalle(det2,'detalle2.txt');
   
-  //actualizarMaestro(mae,det1,det2);
-  //informarMaestro(mae);
+  actualizarMaestro(mae,det1,det2);
+  informarMaestro(mae);
 end.
