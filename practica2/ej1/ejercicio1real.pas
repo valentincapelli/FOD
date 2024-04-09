@@ -47,22 +47,21 @@ type
   
   procedure compactar(var det,mae:archivo);
   var
-    i:ingresos;
-    codigoActual:integer;
+    i,actual:ingresos;
     total:real;
   begin
     reset(det);
     rewrite(mae);
     leer(det,i);
     while (i.codigo <> valoralto) do begin
-      codigoActual:= i.codigo;
+      actual:= i;
       total:= 0;
-      while (i.codigo <> valoralto) and (codigoActual = i.codigo) do begin
+      while (i.codigo <> valoralto) and (actual.codigo = i.codigo) do begin
         total:= total + i.monto;
         leer(det, i);
       end;
-      i.monto:= total;
-      write(mae, i);
+      actual.monto:= total;
+      write(mae, actual);
     end;
     close(det);
     close(mae);

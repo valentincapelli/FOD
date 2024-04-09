@@ -179,22 +179,27 @@ begin
   writeln('Menu de opciones: ');
   writeln('1. Actualizar los estados de las materias de los alumnos.');
   writeln('2. Listar en un archivo de texto aquellos alumnos que tengan más materias con finales aprobados que materias sin finales aprobados');
+  writeln('0. Finalizar el programa.');
   readln(opt);
   assign(mae, 'maestro');
   assign(det, 'detalle');
   // hacer el reset y close dentro de cada modulo
-  case opt of
-    1: begin
-      actualizarEstado(mae,det);
-      exportarATxtActualizacion(mae);
+  while (opt <> 0) do begin
+    case opt of
+      1: begin
+        actualizarEstado(mae,det);
+        exportarATxtActualizacion(mae);
+      end;
+      2: begin 
+       listarAlumnosConMasFinales(mae);
+       exportarATxtAlumnos(mae);
+      end;
+      0:
+      else writeln('Opcion invalida.');
     end;
-   2: begin 
-     listarAlumnosConMasFinales(mae);
-     exportarATxtAlumnos(mae);
-   end;
-    else writeln('Opcion invalida.');
+    writeln('1. Actualizar los estados de las materias de los alumnos.');
+    writeln('2. Listar en un archivo de texto aquellos alumnos que tengan más materias con finales aprobados que materias sin finales aprobados');
+    writeln('0. Finalizar el programa.');
+    readln(opt);
   end;
 end.
-// para actualizar el texto maestro hice un rewrite en vez de reset esta bien? no andaba sino
-// anda pero ademas me imprime datos de un codigo 0???? cuando nunca ingrese ese codigo
-// la opcion 2 parece andar bien

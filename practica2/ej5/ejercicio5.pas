@@ -185,9 +185,10 @@ type
     reset(mae);
     while (not eof(mae)) do begin
       read(mae, regm);
-      if (regm.stock < regm.stockMinimo) then
+      if (regm.stock < regm.stockMinimo) then begin
         writeln(txt, regm.precio:0:2,' ', regm.nombre);
         writeln(txt, regm.stock,' ', regm.descripcion);
+      end;
     end;
     writeln('La exportacion del informe se realizo con exito');
     close(txt);

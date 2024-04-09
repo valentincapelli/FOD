@@ -120,7 +120,7 @@ type
     while (not eof(mae)) do begin
       read(mae,p);
       if (p.stockActual < p.stockMinimo) then
-        write(txt, p.codigo,' ',p.precio:0:2,' ',p.stockActual,' ',p.stockMinimo,' ',p.nombre);
+        writeln(txt, p.codigo,' ',p.precio:0:2,' ',p.stockActual,' ',p.stockMinimo,' ',p.nombre);
     end;
     writeln('La exportacion se realizo con exito.');
     close(txt);
@@ -137,18 +137,22 @@ begin
   writeln('Menu de opciones');
   writeln('1. Actualizar el archivo maestro con el archivo detalle.');
   writeln('2. Listar en un archivo de texto llamado “stock_minimo.txt” aquellos productos cuyo stock actual esté por debajo del stock mínimo permitido.');
+  writeln('0. Finalizar el programa.');
   readln(opt);
   assign(det,'detalle');
   assign(mae,'maestro');
-  case opt of
-    '1': begin
-       actualizarMaestro(mae,det);
-    end;
-    '2': listarStockMinimo(mae);
-    else 
-      writeln('Ingrese una opcion valida.');
+  while (opt <> '0') do begin
+	case opt of
+	  '1': begin
+		actualizarMaestro(mae,det);
+	  end;
+	  '2': listarStockMinimo(mae);
+	  '0': 
+	  else writeln('Ingrese una opcion valida.');
+	end;
+	writeln('1. Actualizar el archivo maestro con el archivo detalle.');
+    writeln('2. Listar en un archivo de texto llamado “stock_minimo.txt” aquellos productos cuyo stock actual esté por debajo del stock mínimo permitido.');
+    writeln('0. Finalizar el programa.');
+    readln(opt);
   end;
 end.
-// Cuando actualizo el maestro con un detalle y el stock actual queda por debajo del minimo,
-// al ejecutar la opcion 2 no me los lista. Solo los lista cuando los inicializo por debajo
-// del stock minimo desde el maestro.
