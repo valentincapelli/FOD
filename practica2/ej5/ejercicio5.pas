@@ -123,17 +123,17 @@ type
   
   procedure minimo(var v:vector; var va:vectorAuxiliar; var min:infoDet);
   var
-    i:integer;
+    i,pos:integer;
   begin
     min.codigo:= valoralto;
     for i:= 1 to sucursales do begin
       if (va[i].codigo < min.codigo) then begin
         min:= va[i];
-        leer(v[i],va[i]);
+        pos:= i;
       end;
     end;
-    //
-    //
+    if(min.codigo <> valoralto)then
+      leer(v[pos],va[pos]);
   end;
   
   procedure actualizarMaestro(var mae:maestro; var v:vector);

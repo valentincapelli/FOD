@@ -13,7 +13,7 @@ inclusive, en diferentes máquinas.
 ● El archivo maestro debe crearse en la siguiente ubicación física: /var/log.}
 program ejercicio6practica2;
 const
-  cantMaquinas = 5;
+  cantMaquinas = 3;
   valoralto = 9999;
 type
   drango = 1..31;
@@ -25,27 +25,27 @@ type
     anio:arango;
   end;
 
-  registroDetalle = record
+  registro = record
     cod_usuario:integer;
-    fecha:fec;
-    tiempo_sesion:integer;
+    fecha:string;//fec;
+    tiempo_sesion:real;
   end;
-  detalle = file of registroDetalle;
+  detalle = file of registro;
   
-  registroMaestro = record
-    cod_usuario:integer;
-    fecha:fec;
-    tiempo_total_de_sesiones_abiertas:integer;
-  end;
-  maestro = file of registroMaestro;
+  //registroMaestro = record
+  //  cod_usuario:integer;
+  //  fecha:string;//fec;
+  //  tiempo_total_de_sesiones_abiertas:integer;
+  //end;
+  maestro = file of registro;
   
   vectorDetalles = array [1..cantMaquinas] of detalle;
-  vectorRegistroDetalle = array [1..cantMaquinas] of registroDetalle;
+  vectorRegistro = array [1..cantMaquinas] of registro;
   
   procedure importarDetalle(var det:detalle);
   var
     txt:text;
-    regd:registroDetalle;
+    regd:registro;
     nombre:string;
   begin
     writeln('Ingrese el nombre del archivo binario detalle');
@@ -59,8 +59,9 @@ type
     reset(txt);
     
     while (not eof(txt)) do begin
-      readln(txt, regd.cod_usuario, regd.fecha, regd.tiempo_sesion); // CHEQUEAR SI FECHA TIENE QUE SER UN REG O UN STRING
+      read(txt, regd.cod_usuario, regd.tiempo_sesion, regd.fecha); // CHEQUEAR SI FECHA TIENE QUE SER UN REG O UN STRING
       write(det, regd);
+      writeln('Escribi');
     end;
     writeln('La importacion del archivo detalle se realizo con exito');
     close(det);
@@ -69,6 +70,7 @@ type
   
   procedure cargarVectorDetalles(var v:vectorDetalles);
   var
+    i:integer;
   begin
     for i:= 1 to cantMaquinas do
       importarDetalle(v[i]); // voy cargando los archivos detalle.txt en cada posicion del vector de detalles, ahora en binario
@@ -90,7 +92,7 @@ type
       close(v[i]);
   end;
   
-  procedure leer(var det:detalle; var regd:registroDetalle);
+  procedure leer(var det:detalle; var regd:registro);
   begin
     if (not eof(det)) then
       read(det,regd)
@@ -98,42 +100,67 @@ type
       regd.cod_usuario:= valoralto;
   end;
   
-  procedure leerDetalles(var v:vectorDetalles; var va:vectorRegistroDetalle);
+  procedure leerDetalles(var v:vectorDetalles; var va:vectorRegistro);
+  var
+    i:integer;
   begin
     for i:= 1 to cantMaquinas do
       leer(v[i],va[i]);
   end;
   
-  procedure minimo(var v:vectorDetalles; var va:vectorRegistroDetalle; var min:registroDetalle);
+  procedure minimo(var v:vectorDetalles; var va:vectorRegistro; var min:registro);
   var
-    i:integer;
+    i,posMin:integer;
   begin
     min.cod_usuario:= valoralto;
+    min.fecha := 'ZZZZ';
     for i:= 1 to cantMaquinas do begin
-      if (va[i].codigo < min.codigo) then begin
+      if (va[i].cod_usuario <= min.cod_usuario) then begin
         min:= va[i];
-        leer(v[i],va[i]);
+        posMin:= i;
       end;
     end;
+    if(min.cod_usuario <> valoralto)then
+      leer(v[posMin],va[posMin]);
   end;
   
-  procedure crearMaestroActualizado(var mae:maestro; var v:vectorDetalles)
+  procedure informarMaestro(var mae:maestro);
   var
-    regm:registroMaestro;
-    min,actual:registroDetalle;
-    va:vectorRegistroDetalle;
+    regm:registro;
   begin
+    reset(mae);
+    while (not eof(mae)) do begin
+      read(mae,regm);
+      writeln('Codigo: ',regm.cod_usuario,' Fecha: ', regm.fecha,' Tiempo de sesion: ',regm.tiempo_sesion:0:2);
+    end;
+    close(mae);
+  end;
+  
+  procedure crearMaestroActualizado(var mae:maestro; var v:vectorDetalles);
+  var
+    min,actual:registro;
+    va:vectorRegistro;
+  begin
+    assign(mae, 'maestro');
     rewrite(mae);
     abrirDetalles(v);
     leerDetalles(v,va);
     minimo(v,va,min);
     while (min.cod_usuario <> valoralto) do begin
-      actual := min;
-      tiempototal := 0;
+      actual.cod_usuario := min.cod_usuario;
       while (min.cod_usuario = actual.cod_usuario) do begin
-        //
+        actual.fecha := min.fecha;
+        actual.tiempo_sesion:= 0;
+        while (min.cod_usuario = actual.cod_usuario) and (min.fecha = actual.fecha) do begin
+          actual.tiempo_sesion:= actual.tiempo_sesion + min.tiempo_sesion;
+          minimo(v,va,min);
+        end;
+        write(mae,actual);
       end;
     end;
+    close(mae);
+    cerrarDetalles(v);
+    writeln('Se creo el archivo maestro');
   end;
 var
   mae:maestro;
@@ -142,4 +169,4 @@ begin
   cargarVectorDetalles(vector); // importo el vector de detalles en tipo txt
   crearMaestroActualizado(mae, vector);
   informarMaestro(mae);
-end;
+end.
