@@ -1,0 +1,4 @@
+1800 2020 1 1 1 Valentin Capelli
+2000 2020 3 3 1 Valentin Capelli
+2200 2020 4 4 2 Fabio Torrejon
+1500 2020 5 5 2 Fabio Torrejon
