@@ -40,6 +40,20 @@ type
   end;
   detalle = file of archivo detalle;
   
+  procedure importarDetalle(var det:detalle);
+  
+  procedure importarMaestro(var mae:maestro);
+  
+  procedure actualizarMaestroEInformar();
+  var
+    regm,actual:registroMaestro;
+    regd:registroDetalle;
+  begin
+    reset(mae);
+    reset(det);
+    
+  end;
 var
 begin
 end;
+// le pongo el nombre /var/log/logmail.dat directamente.

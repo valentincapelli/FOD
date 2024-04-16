@@ -161,36 +161,30 @@ type
   
   procedure actualizarMaestro(var mae:maestro; var vd:vectorDetalles);
   var
-    regm,actual:registroMaestro;
+    actual:registroMaestro;
     vrd:vectorRegistroDetalle;
     min:registroDetalle;
   begin
     reset(mae);
-    read(mae,regm);
     abrirDetalles(vd);
     leerDetalles(vd,vrd);
     minimo(vd,vrd,min);
+    read(mae,actual);
     while (min.codigoLocalidad <> valorAltoInt) do begin
-      actual.codigoLocalidad := min.codigoLocalidad;
-      while (min.codigoLocalidad = actual.codigoLocalidad) do begin
-        actual.codigoCepa := min.codigoCepa;
-        actual.recuperados:= 0;
-        actual.fallecidos:= 0;
-        while (min.codigoLocalidad = actual.codigoLocalidad) and (min.codigoCepa = actual.codigoCepa) do begin
+      while (min.codigoLocalidad <> actual.codigoLocalidad) do
+        read(mae,actual); // si sale de este loop es porque las localidades son iguales
+      while (min.codigoLocalidad <> valorAltoInt) and (actual.codigoLocalidad = min.codigoLocalidad) do begin
+        while (actual.codigoCepa <> min.codigoCepa) do
+          read(mae,actual); //busco la cepa igual
+        while (min.codigoLocalidad <> valorAltoInt) and (actual.codigoLocalidad = min.codigoLocalidad) do begin
           actual.casosActivos:= min.casosActivos;
           actual.casosNuevos:= min.casosNuevos;
           actual.recuperados:= actual.recuperados + min.recuperados;
           actual.fallecidos:= actual.fallecidos + min.fallecidos;
           minimo(vd,vrd,min);
         end;
-        while (regm.codigoLocalidad <> actual.codigoLocalidad) and (regm.codigoCepa <> actual.codigoCepa) do
-          read(mae,regm);
-        actual.nombreLocalidad:= regm.nombreLocalidad;
-        actual.nombreCepa:= regm.nombreCepa;
         seek(mae,filepos(mae)-1);
         write(mae,actual);
-        if (not eof(mae)) then
-          read(mae,regm);
       end;
     end;
     writeln('El archivo maestro fue actualizado.');

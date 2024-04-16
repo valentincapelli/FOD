@@ -141,6 +141,7 @@ type
     min,actual:registro;
     va:vectorRegistro;
   begin
+    //assign(mae, '/var/log/maestro');
     assign(mae, 'maestro');
     rewrite(mae);
     abrirDetalles(v);
