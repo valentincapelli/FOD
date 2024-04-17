@@ -110,6 +110,7 @@ type
         leer(det,regd);
       end;
       while (regm.nro_usuario <> nroActual) do begin
+        writeln(txt,'Numero de usuario:',regm.nro_usuario,' Mensajes enviados:',regm.cantidadMailsEnviados);
         read(mae,regm);
       end;
       regm.cantidadMailsEnviados:= regm.cantidadMailsEnviados + cantMails;
@@ -137,4 +138,4 @@ begin
   importarDetalle(det);// se dispone
   actualizarMaestroEInformar(mae,det,txt);
 end.
-// si el primero no fue actualizado no lo informa. Hago todo en un recorrido por eso ocurre eso.
+// le pongo el nombre /var/log/logmail.dat directamente.

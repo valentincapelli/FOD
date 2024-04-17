@@ -1,0 +1,5 @@
+Numero de usuario:0 Mensajes enviados:1
+Numero de usuario:1 Mensajes enviados:12
+Numero de usuario:2 Mensajes enviados:21
+Numero de usuario:3 Mensajes enviados:30
+Numero de usuario:4 Mensajes enviados:40
