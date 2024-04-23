@@ -74,7 +74,11 @@ type
     procedure informarArchivo(var arch:archivo_novelas);
     var
         n:novela;
+        name:string;
     begin
+        writeln('Ingrese el nombre del archivo.');
+		readln(name);
+		assign(arch,name);
         reset(arch);
         while (not eof(arch)) do begin
 			read(arch,n);
@@ -97,47 +101,92 @@ se debe leer el registro en la posición 5, copiarlo en la posición 0
 posición 5. Con el valor 0 (cero) en el registro cabecera se indica
 que no hay espacio libre.}
 	
-	procedure darDeAlta(var arch:archivo);
+	procedure darDeAlta(var arch:archivo_novelas);
 	var
-		codigo:integer;
+		n,aux:novela;
+	begin
+		reset(arch);
+		
+		leerNovela(n); 
+		read(arch,aux); // leo la cabecera
+		if (aux.codigo < 0) then begin  // si el codigo es negativo recupero espacio
+			seek(arch, aux.codigo*(-1));  // me posiciono en la ultima posicion dada de baja
+			read(arch,aux);  // leo el codigo de esa posicion
+			seek(arch,filepos(arch)-1);  // me vuelvo a posicionar en la misma pos
+			write(arch,n); // escribo la nueva novela en ese pos para recuperar espacio
+			seek(arch,0);  // me posiciono en la cabecera
+			write(arch,aux);  // escribo el codigo que habia leido en la pos que habia sido dada de baja
+		end
+		else begin
+			seek(arch,filesize(arch));
+			write(arch,n);
+		end;
+		close(arch);
+		writeln('La novela fue registrada.');
+	end;
+	
+	procedure darDeBaja(var arch:archivo_novelas);
+	var
+		codigo,cabecera,head:integer;
 		n:novela;
 	begin
-		//reset(arch);
-		writeln('Ingrese el codigo de novela que quiere dar de alta');
+		writeln('Ingrese un codigo de novela a borrar.');
 		readln(codigo);
-		while (not eof(arch) and n.codigo <> codigo) do 
+		reset(arch);
+		read(arch,n);
+		cabecera:= n.codigo; 
+		while (not eof(arch)) and (n.codigo <> codigo) do
 			read(arch,n);
 		if (n.codigo = codigo) then begin
-		    pos:= filepos(arch)-1'
-			seek(arch, 0);
-			read(arch,n);
-			if (n.codigo < 0) then begin
-				seek(arch,(n.codigo*(-1)));
-				read(arch,n);
-			end;
-		end;
-		//close(arch);
+			n.codigo:= cabecera;  // me guardo el valor de la cabecera actual
+			seek(arch,filepos(arch)-1); // se reposiciona en la pos a borrar
+			head:= (-1 * filepos(arch)); // paso a negativo la pos a borrar y se lo asigno a la variable de cabecera
+			write(arch, n); // escribo la vieja cabecera
+			seek(arch,0);
+			n.codigo := head; {asigna la nueva cabecera en la misma variable}
+			write(arch,n); // actualiza la cabecera para mantener el orden de la lista
+			writeln('La novela fue borrada correctamente.');
+		end
+		else
+			writeln('El codigo ingresado no se encontro.');
+		close(arch);
+	end;
+	
+	procedure modificarNovela(var arch:archivo_novelas);
+	var
+		n:novela;
+		codigo:integer;
+	begin
+		reset(arch);
+		writeln('Ingrese el codigo de novela que desea modificar.');
+		readln(codigo);
+		close(arch);
 	end;
     
     procedure operaciones(var arch:archivo_novelas);
     var
 		opt:integer;
+		name:string;
     begin
-		reset(arch);
 		opt:= -1;
+		writeln('Ingrese el nombre del archivo.');
+		readln(name);
+		assign(arch,name);
 		while (opt <> 0) do begin
 			writeln('Menu de operaciones');
 			writeln('Ingrese 0 si quiere salir del menu.');
 			writeln('Ingrese 1 si quiere dar de alta una novela.');
+			writeln('Ingrese 2 si quiere modificar una novela.');
+			writeln('Ingrese 3 si quiere dar de baja una novela.');
 			readln(opt);
 			case opt of
 				0: writeln('Saliendo del menu de operaciones...');// termina el loop
 				1: darDeAlta(arch);
-				2: writeln('fsdf');
+				2: modificarNovela(arch);
+				3: darDeBaja(arch);
 				else writeln('Ingrese un numero correcto');
 			end;
 		end;
-		close(arch);
     end;
 var
 	arch:archivo_novelas;

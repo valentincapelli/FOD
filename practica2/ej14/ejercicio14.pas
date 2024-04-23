@@ -27,7 +27,7 @@ type
     registroMaestro = record
         codigoProv:integer;
         nombreProv:string;
-        codigoLoc:string;
+        codigoLoc:integer;
         nombreLoc:string;
         viviendasSinLuz:integer;
         viviendasSinGas:integer;
@@ -39,7 +39,7 @@ type
   
     registroDetalle = record
 	    codigoProv:integer;
-        codigoLoc:string;
+        codigoLoc:integer;
         viviendasConLuz:integer;
         viviendasConstruidas:integer;
         viviendasConAgua:integer;
@@ -110,23 +110,35 @@ type
   begin
       if (not eof(det)) then
 	      read(det,regd)
-	  else
+	  else begin
 	      regd.codigoProv:= valoralto;
+	      regd.codigoLoc:= valoralto;
+	  end;
+  end;
+
+  procedure leerMae(var mae:maestro ; var regm:registroMaestro);
+  begin
+      if (not eof(mae)) then
+	      read(mae,regm)
+	  else
+	      regm.codigoProv:= valoralto;
   end;
   
-  procedure minimo(var vd:vectorDetalle; var vrd:vectorRegistroDetalle; min:registroDetalle);
+  procedure minimo(var vd:vectorDetalle; var vrd:vectorRegistroDetalle; var min:registroDetalle);
   var
       i,pos:subRango;
   begin
 	  min.codigoProv:= valoralto;
+	  min.codigoLoc:= valoralto;
+	  
 	  for i:= 1 to dimf do begin
-		  if (vrd[i].codigoProv < min.codigoProv) then begin
+		  if (vrd[i].codigoProv < min.codigoProv) and (vrd[i].codigoLoc < min.codigoLoc)then begin
 			  min:= vrd[i];
 			  pos:= i;
+			  writeln(i);
 		  end;
 	  end;
-	  if (min.codigoProv <> valoralto) then
-	      leer(vd[pos],vrd[pos]);
+	  if (min.codigoProv <> valoralto) then leer(vd[pos],vrd[pos]);
   end;
   
   procedure actualizarMaestro(var mae:maestro; var vd:vectorDetalle);
@@ -144,26 +156,24 @@ type
 		  leer(vd[i],vrd[i]);
       end;
       minimo(vd,vrd,min);
-      read(mae,regm);
+      
       while (min.codigoProv <> valoralto) do begin
-	      while (min.codigoProv <> regm.codigoProv) do
-	          read(mae,regm);
-	      while (min.codigoProv <> regm.codigoProv) do begin
-			  while (min.codigoLoc <> regm.codigoLoc) do
-				  read(mae,regm);
-			  while (min.codigoProv = regm.codigoProv) and (min.codigoLoc = regm.codigoLoc) do begin
-				  regm.viviendasSinLuz:= regm.viviendasSinLuz - min.viviendasConLuz;
-				  regm.viviendasSinAgua:= regm.viviendasSinAgua - min.viviendasConAgua;
-				  regm.viviendasSinGas:= regm.viviendasSinGas - min.viviendasConGas;
-				  regm.viviendasSinSanitarios:= regm.viviendasSinSanitarios - min.entregaSanitarios;
-				  regm.viviendasDeChapa:= regm.viviendasDeChapa - min.viviendasConstruidas;
-			  end;
-			  if (regm.viviendasDeChapa = 0) then
-			    cantLocalidades:= cantLocalidades + 1;
-			  seek(mae,filepos(mae)-1);
-			  write(mae,regm);
-	      end;
-      end;
+	      leerMae(mae,regm);
+	      while ((regm.codigoProv <> valoralto) and (min.codigoProv <> regm.codigoProv) and (min.codigoLoc <> regm.codigoLoc)) do leerMae(mae,regm);
+	      
+			while (min.codigoProv = regm.codigoProv) and (min.codigoLoc = regm.codigoLoc) do begin
+				regm.viviendasSinLuz:= regm.viviendasSinLuz - min.viviendasConLuz;
+				regm.viviendasSinAgua:= regm.viviendasSinAgua - min.viviendasConAgua;
+				regm.viviendasSinGas:= regm.viviendasSinGas - min.viviendasConGas;
+				writeln('AQUI');
+				regm.viviendasSinSanitarios:= regm.viviendasSinSanitarios - min.entregaSanitarios;
+				regm.viviendasDeChapa:= regm.viviendasDeChapa - min.viviendasConstruidas;
+				minimo(vd, vrd, min);
+			end;
+			if (regm.viviendasDeChapa = 0) then cantLocalidades:= cantLocalidades + 1;
+			seek(mae,filepos(mae)-1);
+			write(mae,regm);
+	    end;
       writeln('La cantidad de localidades sin viviendas de chapa es: ',cantLocalidades);
       close(mae);
       for i:= 1 to dimf do
