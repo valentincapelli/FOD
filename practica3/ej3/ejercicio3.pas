@@ -82,7 +82,8 @@ type
         reset(arch);
         while (not eof(arch)) do begin
 			read(arch,n);
-			writeln('Codigo = ',n.codigo,' Nombre = ',n.nombre,' Genero =',n.genero,' Duracion = ',n.duracion,' Director = ',n.director,' Precio = ',n.precio:0:2);
+			if (n.codigo > 0) then
+				writeln('Codigo = ',n.codigo,' Nombre = ',n.nombre,' Genero =',n.genero,' Duracion = ',n.duracion,' Director = ',n.director,' Precio = ',n.precio:0:2);
         end;
         close(arch);
     end;
@@ -152,14 +153,35 @@ que no hay espacio libre.}
 		close(arch);
 	end;
 	
+{i. Modificar los datos de una novela leyendo la información desde
+teclado. El código de novela no puede ser modificado.}
+	
 	procedure modificarNovela(var arch:archivo_novelas);
 	var
+		encontre:boolean;
 		n:novela;
 		codigo:integer;
 	begin
+	    encontre:= false;
 		reset(arch);
-		writeln('Ingrese el codigo de novela que desea modificar.');
-		readln(codigo);
+		while (encontre = false) do begin
+			writeln('Ingrese el codigo de novela que desea modificar.');
+			readln(codigo);
+			read(arch,n);
+			while (not eof(arch)) and (n.codigo <> codigo) do
+				read(arch,n);
+			if (n.codigo = codigo) then begin
+				encontre:= true;
+				leerNovela(n);
+				seek(arch,filepos(arch)-1);
+				write(arch,n);
+			end
+			else begin
+				writeln('El codigo de novela no se encuentra en el archivo.');
+				encontre:= false;
+				seek(arch,0);
+			end;
+		end;
 		close(arch);
 	end;
     
@@ -188,6 +210,29 @@ que no hay espacio libre.}
 			end;
 		end;
     end;
+    
+    procedure exportarTxt(var arch:archivo_novelas);
+	var
+		txt:text;
+		n:novela;
+		name:string;
+	begin
+		writeln('Ingrese el nombre del archivo.');
+		readln(name);
+		assign(arch,name);
+		reset(arch);
+		assign(txt,'novelas.txt');
+		rewrite(txt);
+		while (not eof(arch)) do begin
+			read(arch,n);
+			writeln(txt, n.codigo,' ',n.duracion,' ',n.precio:0:2,' ',n.nombre);
+			writeln(txt, n.genero);
+			writeln(txt, n.director);
+		end;
+		close(arch);
+		close(txt);
+	end;
+	
 var
 	arch:archivo_novelas;
 	opt:str40;
@@ -196,14 +241,16 @@ begin
 	while (opt <> 'ZZZZ') do begin
 		writeln('Menu de opciones novelas');
 		writeln('Ingrese A para crear un archivo de novelas.');
-		writeln('Ingrese B para informar el archivo de novelas.');
-		writeln('Ingrese C para realizar operaciones con el archivo de novelas.');
+		writeln('Ingrese B para realizar operaciones con el archivo de novelas.');
+		writeln('Ingrese C para listar en un txt todo el archivo de novelas.');
+		writeln('Ingrese D para informar el archivo de novelas.');
 		writeln('Ingrese ZZZZ para terminar el programa.');
 		readln(opt);
 		case opt of
 			'A': crearArchivo(arch);
-			'B': informarArchivo(arch);
-			'C': operaciones(arch);
+			'B': operaciones(arch);
+			'C': exportarTxt(arch);
+			'D': informarArchivo(arch);
 		end;
 	end;
 end.
