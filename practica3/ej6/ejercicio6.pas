@@ -15,6 +15,68 @@ del archivo, se deberá renombrar el archivo nuevo con el nombre del archivo mae
 original.}
 program ejercicio6practica3;
 type
+	registroMaestro = record
+		cod_prenda:integer;
+		descripcion:string;
+		colores:string;
+		tipo_prenda:string;
+		stock:integer;
+		precio_unitario:real;
+	end;
+	maestro = file of registroMaestro;
+	
+	registroDetalle = record
+		cod_prenda:integer;
+	end;
+	detalle = file of regsitroDetalle;
+	
+	procedure bajaLogica(var mae:maestro; var det:detalle);	
+	var
+		regm:registroMaestro;
+		regd:registroDetalle;
+	begin
+		reset(mae)
+		reset(det);
+		while (not eof(det)) do begin
+			seek(det,0);
+			read(det,regd);
+		    read(mae,regm);
+			while (regd.codigo <> regm.codigo) and (not eof(det)) do
+				read(det,regd);
+			if (regd.codigo = regm.codigo) then begin
+				regm.stock := regm.stock*(-1);
+				write(mae,regm);
+				read(mae,regm);
+			end;
+		end;
+		close(mae)
+		close(det);
+	end;
+	
+	procedure compactarArchivo(var mae:maestro; var nuevoMae:maestro);
+	var
+		regm:registroMaestro;
+	begin
+		assign(nuevoMae,'Nuevo maestro');
+		rewrite(nuevoMae);
+		reset(mae);
+		while (not eof(mae)) do begin
+			read(mae,regm);
+			if (regm.stock >= 0) then
+				write(nuevoMae,regm);
+		end;
+		close(mae);
+		close(nuevoMae);
+		erase(mae);
+		rename(nuevoMae,'maestro');
+	end;
+	
 var
+	mae,nuevoMae:maestro;
+	det:detalle;
 begin
+	importarMaestro();
+	importarDetalle(det);
+	bajaLogica(mae,det);
+	compactarArchivo(mae,nuevoMae);
 end.
