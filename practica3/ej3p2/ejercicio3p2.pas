@@ -59,15 +59,15 @@ type
 	
 	function buscarRegistro(var mae:maestro; regd:registro):registro;
 	var
-		regm:registro;
+		regm, devolver :registro;
 	begin
-		while (not eof(mae)) do begin
+		devolver.codigo:= -1;
+		while (not eof(mae) and (devolver.codigo=-1)) do begin
 			read(mae,regm);
 			if (regm.codigo = regd.codigo) and (regm.fecha = regd.fecha) then
-				buscarRegistro:= regm;
+				devolver:= regm;
 		end;
-		regm.codigo:= -1;
-		buscarRegistro:= regm;
+		buscarRegistro:= devolver;
 	end;
 	
 	procedure generarMaestro(var mae:maestro; var v:vectorDetalles);
@@ -78,11 +78,12 @@ type
 	begin
 		assign(mae,'maestro');
 		rewrite(mae);
+		close(mae);
 		for i:= 1 to dimf do begin
 			reset(v[i]);
 			repeat
 				read(v[i],vrd[i]); // leo del vector de detalles
-				seek(mae,0); // dejo el puntero siempre al principio
+				reset(mae); // dejo el puntero siempre al principio
 				regm := buscarRegistro(mae,vrd[i]); // chequea si ese codigo y esa fecha ya esta en el maestro
 				if (regm.codigo < 0) then begin  // si es menor a 0 es por que es un nuevo codigo u otra fecha de un mismo codigo
 					seek(mae,filesize(mae)); // me paro a lo ultimo para poder escribir uno nuevo
@@ -93,10 +94,11 @@ type
 					seek(mae,filepos(mae)-1);
 					write(mae,regm);
 				end;
+				close(mae);
 			until (eof(v[i])); // hasta que llegue al final del archivo detalle
 			close(v[i]);
 		end;
-		close(mae);
+		//close(mae);
 		writeln('Archivo maestro creado');
 	end;
 	
