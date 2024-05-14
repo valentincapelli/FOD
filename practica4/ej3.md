@@ -28,7 +28,7 @@ para poder mantener el orden del arbol.
 
 b_ Los nodos hojas contienen todos las claves del arbol y ademas nos permiten recorrer el arbol de forma secuencial.
 
-c_ 
+c_ Libro
 
 d_ Lee un nodo, compara el dni con cada uno del vector de dnis del nodo, y va a seguir la busqueda con el indice que este
 entre un dni menor y un dni mayor al de la busqueda. Si encuentra el dni, debe chequear que sea un nodo terminal, si lo es
@@ -38,4 +38,4 @@ La diferencia que se encuentra respecto a la búsqueda en un índice estructurad
 podemos encontrar el dni, pero debemos seguir la busqueda hasta un nodo terminal, ya que los valores en nodos internos son
 copias.
 
-e_ 
+e_ Lo contrario al del 2.

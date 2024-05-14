@@ -80,4 +80,5 @@ No tiene sentido por que este archivo indice tiene el criterio de ordenacion por
 Crearia un nuevo arbolB, con la misma idea que el arbolB ordenado por dni, pero ordenandolo por numero de legajo. Asi tendriamos enlaces
 correspondientes al numero de legajo de cada alumno.
 
-f_ Consultar.
+f_ El problema es que va a ser poco eficiente la busqueda de dni ya que el rango es muy grande, y deberia realizar muchos desplazamientos para encontrar cada dni. El arbolB+ solucionaria este problema por el hecho de tener hojas enlazadas.
+
