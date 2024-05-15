@@ -38,4 +38,6 @@ La diferencia que se encuentra respecto a la búsqueda en un índice estructurad
 podemos encontrar el dni, pero debemos seguir la busqueda hasta un nodo terminal, ya que los valores en nodos internos son
 copias.
 
-e_ Lo contrario al del 2.
+e_ El arbolB+ al tener sus hojas enlazadas y de forma ordenada, podemos recorrerlos y acceder a ellos de forma secuncial, lo
+cual lo hace mucho mas rapido comparado al arbolB. Solo deberiamos recorrer las hojas para hallar los datos. Mucho mas
+eficiente que con el arbolB.
