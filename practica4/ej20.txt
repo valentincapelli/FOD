@@ -1,0 +1,37 @@
+20. Dado el siguiente árbol B+ de orden 4, mostrar cómo quedaría definido el árbol luego
+de realizar las siguientes operaciones: -56, -23, -1.
+
+                            2: 0 (56) 1
+
+                0: (1)(23) 1            1: (56) (75) (107) -1
+
+------------------------------------------------------------------------------------------------------------
+-56
+                            2: 0 (56) 1
+
+                0: (1)(23) 1            1: (75) (107) -1
+
+L2, L1, E1
+
+- Elimino el 56 del nodo 1 sin problemas.
+
+------------------------------------------------------------------------------------------------------------
+-23
+                            2: 0 (56) 1
+
+                0: (1) 1            1: (75) (107) -1
+
+L2, L0, E0
+
+- Elimino el 23 del nodo 0 sin problemas.
+
+------------------------------------------------------------------------------------------------------------
+-1
+                            2: 0 (107) 1
+
+                0: (75) 1            1: (107) -1
+
+L2, L0, L1, E0, E1, E2
+
+- Elimino el 1 del nodo 0 pero queda en underflow, entonces redistribuyo con el nodo adyacente derecho. Uso la copia
+del 107 para el nodo padre ya que con la del 75 no podria.
