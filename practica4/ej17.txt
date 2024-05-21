@@ -168,4 +168,7 @@ Consultar queda el 23 o el 67 en la raiz? Paso -23
 
 L2, L3, E3, E2
 
-- Elimino el 89 del nodo 3 sin problema.    
+- Elimino el 89 del nodo 3 sin problema.
+Si hay fusion se elimina la clave separadora
+Si hay redistribucion se sobreescribe
+

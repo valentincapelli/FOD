@@ -1,0 +1,63 @@
+Explicacion Practica Hashing
+
+Dispersion de archivos / Hashing
+    Un metodo para generar  una direccion base unica para una clave dadd.
+    Convierte la clave en un numero aleatorio, que luego sirve para determinar donde
+    se almacena la clave.
+
+Hashing estatico: tenia en cuenta de antemano cuanto espacio va a tener disponible para repartir
+los registros del archivo.
+
+Hashing dinamico: el espacio que tenemos para repartir los registros va cambiando dinamicamente.
+
+Parametros a considerar:
+    . Capacidad de almacenamiento de cada direccion. Generalmente un valor grande(en la practica valores chicos).
+    . Densidad de empaquetamiento: la proporcion de espacio de mi archivo que esta efectivamente siendo utilizada.
+    . Funcion de hash: de forma uniforme es mejor que si devolviera siempre las mismas direcciones.
+    . Metodo de tratamiento de overflows.
+
+Funcion de dispersion: caja negra que a partir de una clave genera una direccion fisica donde debe almacenarse
+el registro.
+
+Colision: cuando la funcion de hash devuelve una direccion en la cual ya hay otra registro cargado. No siempre que
+hay colision hay desborde/overflow.
+
+Desborde: cuando quiero insertar el registro en la direccion asignada por el hash ya no hay lugar.
+
+Densidad de empaquetamiento: relacion entre el espacio disponible pra el archivo de datos y la cantidad de registros
+que integran el mismo.
+
+Aunque la funcion de dispersion sea buena siempre existe la posibilidad de desbordes.
+Algunos metodos para tratar overflows son:
+    . Saturacion progresiva: ej: un archivo con 10 direcciones. Funcion de hash que devuelve un valor de 0 a 9.
+    Si en la direc 1 tengo la clave z. Y quiero insertar la clave y, aplico hash en y me devulve la direc 1. 
+    Que hago? Con este metodo a partir de la direccion que me devolvio el hash, busco de forma secuencial que 
+    direccion no esta ocupada. Se segui buscando de forma recursiva hasta que encuentre una direc. Lo malo es que
+    cada vez que tengo q buscar la clave, tengo que buscarla a partir de la direccion que me devolvio el hashing.
+    Esto genera mas accesos.
+
+    . Saturacion progresiva encadenada: aplico hash, me devuelve direc base, busco de forma secuencial una pos 
+    libre, inserto la clave, y creo un enlace en la direc base que apunte a la direccion donde quedo la nueva
+    clave. Quedan encadenadas. Hay un campo adicional que es el enlace.
+
+    . Saturacion progresiva con area de desborde por separado.
+
+    . Dispersion doble.
+
+Hashing Extensible
+    Es una forma de implementacion de hashing con direccionamiento dinamico.
+    Ejemplo:
+        . Funcion de dispersion: retorna 32 bits.
+        . Capacidad para 2 registros en cada nodo(direccion).
+        . Se dispersaran un total de 10 claves.
+
+    Nos vamos a enfocar en los ultimos 4 bits de las cadenas.
+    Se necesita de una estructura auxiliar, que contendra direcciones de los nodos que forman mi archivo.
+    Cubetas = nodo. Son los elementos del archivo. Aqui se insertaran los registros con las claves que
+    obtengamos del hashing.
+    Inicialmente tendremos un unico nodo. Y una unica referencia en la memoria que hace referencia a esa clave.
+    
+
+    
+
+
