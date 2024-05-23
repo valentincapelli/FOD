@@ -1,0 +1,44 @@
+2 - Árboles 
+Dado  un  árbol B de  orden  4 y con  política  derecha  para  la  resolución  de  underflow,  para  cada 
+operación  dada debe: 
+a. Dibujar  el árbol resultante. 
+b. Explicar  las  decisiones tomadas. 
+c. Indicar  las  lecturas y escrituras en  el  orden  de ocurrencia. 
+Las  operaciones a realizar son:  +260,  -310,  -490,  -60 
+Arbol  inicial: 
+                            2:  0 (100)  1(310)  4 (600) 3
+
+    0:  (60)          1:(160)(210)(240)           4: (420)(490)        3:  (800)
+----------------------------------------------------------------------------------------------------------------
++260
+                                    7: 2(310)6
+
+                        2: 0(100) 1 (240)5       6: 4(600)3
+
+        0:  (60)    1: (160)(210)      5: (260)           4: (420)(490)        3:  (800)
+
+L2, L1, E1, E5, E2, E6, E7
+
+- Intento agregar el 260 en el nodo 1 pero hay overflow, divido el nodo 1, creo el nodo 5 y promociono el 240. Cuando
+hago esto se propaga el overflow al nodo 2, entonces divido de nuevo, creo el nodo 6 y promociono el 310 a un nuevo
+nodo 7.
+
+----------------------------------------------------------------------------------------------------------------
+-310
+                                    7: 2(420)6
+
+                        2: 0(100) 1 (240)5       6: 4(600)3
+
+        0:  (60)    1: (160)(210)      5: (260)       4: (490)        3:  (800)
+
+L7, L6, L4, E4, E7
+
+- Reemplazo el 310 por la menor clave del subarbol derecho, osea el 420.
+
+----------------------------------------------------------------------------------------------------------------
+-490
+                                    7: 2(240)6
+
+                        2: 0(100) 1       6: 5(420)4
+
+        0:  (60)    1: (160)(210)      5: (260)       4:(600)(800)
