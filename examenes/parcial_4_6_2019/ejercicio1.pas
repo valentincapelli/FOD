@@ -125,6 +125,7 @@ type
                     minimo(v,vrd,min);
                 end;
                 write(mae,actual);
+                writeln('Escribi');
             end;
         end;
         writeln('Se creo el maestro');
@@ -148,7 +149,7 @@ type
             read(mae,regm);
         end;
         close(mae);
-        writeln('El maximo es ', maxFarmaco);
+        writeln('El codigo del farmaco mas vendido es ', maxFarmaco);
     end;
 
     procedure listarArchivo(var mae:maestro; v:vector);
@@ -160,11 +161,10 @@ type
         assign(txt,'maestro.txt');
         rewrite(txt);
         reset(mae);
-        read(mae,regm);
         while (not eof(mae)) do begin
+			read(mae,regm);
             writeln(txt, regm.cod,' ', regm.cantidad_vendida,' ', regm.nombre);
             writeln(txt, regm.fecha);
-            read(mae,regm);
         end;
         close(mae);
         close(txt);
