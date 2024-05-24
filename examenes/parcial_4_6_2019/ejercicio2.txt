@@ -1,0 +1,12 @@
+2. Árboles en Archivos
+Dado el árbol B+ que se detalla más abajo, con orden 6, es decir, capacidad de 5 claves como máximo. 
+Muestre los estados sucesivos al realizar la siguiente secuencia de operaciones: +159, -5 y -190, además 
+indicar nodos leídos y escritos en el orden de ocurrencia. 
+Política de resolución underflow derecha
+
+Nodo 2: 5, i, 0(10)1 (60)3(115)4(145)5(179)6. Nodo 0: 2, h, (1)(5) -> 1
+Nodo 1: 2, h, (34)(44) -> 3
+Nodo 3: 2, h, (60) (113) -> 4
+Nodo 4: 4, h, (120) (125) (131) (139) -> 5
+man
+Nodo 5: 5, h, (145) (153) (158) (160) (177) -> 6 Nodo 6: 2, h, (179) (190) -> -1

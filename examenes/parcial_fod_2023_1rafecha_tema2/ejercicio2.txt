@@ -42,3 +42,21 @@ L7, L6, L4, E4, E7
                         2: 0(100) 1       6: 5(420)4
 
         0:  (60)    1: (160)(210)      5: (260)       4:(600)(800)
+
+L7, L6, L4, L3, E4, E3, L2, E2, E6, E7
+
+- Elimino el 490 del nodo 4 y me queda en underflow, como no puedo redistribuir, fusiono con el nodo 3 y baja la clave
+600 del nodo 6. Al hacer esto se propaga el underflow al nodo 6, entonces como no tengo hermano derecho, redistribuyo
+con el hermano izquierdo.
+
+----------------------------------------------------------------------------------------------------------------
+-60
+                                    7: 2(240)6
+
+                        2: 0(160) 1       6: 5(420)4
+
+        0:  (100)    1: (210)      5: (260)       4:(600)(800)
+
+L7, L2, L0, L1, E0, E1, E2
+
+- Elimino el 60 del nodo 0 pero me queda en underflow, entonces redistribuyo con el nodo 1.
