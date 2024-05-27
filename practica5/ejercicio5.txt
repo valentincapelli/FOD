@@ -1,0 +1,13 @@
+5. Explique brevemente qué es la densidad de empaquetamiento. ¿Cuáles son las
+consecuencias de tener una menor densidad de empaquetamiento en un archivo
+directo?
+
+_  Se define la Densidad de empaquetamiento (De) como la relación entre el espacio disponible para
+el archivo de datos y la cantidad de registros que integran dicho archivo.
+
+_Cuanto mayor sea la DE, mayor será la posibilidad de colisiones, dado que en ese caso se dispone de
+menos espacio para esparcir registros.
+Por el contrario, si la DE se mantiene baja, se dispone de mayor espacio para esparcir registros y, 
+por ende, disminuye la probabilidad de colisiones. Por otra parte, cuando la DE se mantiene baja, 
+se desperdicia espacio en el disco, dado que se utiliza menor espacio que el reservado, generando 
+fragmentación.

@@ -1,0 +1,43 @@
+6. Explique brevemente cómo funcionan las siguientes técnicas de resolución de
+desbordes que se pueden utilizar en hashing estático.
+● Saturación progresiva
+● Saturación progresiva encadenada
+● Dispersión doble
+● Saturación progresiva encadenada con área de desborde separada
+
+_ Saturación progresiva: el método consiste en almacenar el registro en la dirección siguiente
+más próxima al nodo donde se produce saturación.
+Ej: un archivo con 10 direcciones. Funcion de hash que devuelve un valor de 0 a 9.
+Si en la direc 1 tengo la clave Z. Y quiero insertar la clave Y, aplico hash en Y y me devuelve la direc 1. 
+Que hago? Con este metodo, a partir de la direccion que me devolvio el hash, busco de forma secuencial que 
+direccion no esta ocupada. Se sigue buscando de forma secuencial hasta que encuentre una direc con espacio. 
+Lo malo es que cada vez que tengo q buscar la clave, tengo que buscarla a partir de la direccion que me 
+devolvio el hashing. Esto genera mas accesos.
+
+_ Saturación progresiva encadenada: La saturación progresiva encadenada presenta otra variante al tratamiento 
+de la saturación. En líneas generales, el método funciona igual a su predecesor. Un elemento que se intenta 
+ubicar en una dirección completa es direccionado a la inmediata siguiente con espacio disponible. La diferencia
+radica en que, una vez localizada la nueva dirección, esta se encadena o enlaza con la dirección base inicial, 
+generando una cadena de búsqueda de elementos. 
+    Si bien la performance final de cada método dependerá del orden de llegada de las llaves, en líneas generales
+puede establecerse que el método de saturación progresiva encadenada presenta mejoras de performance respecto de 
+su predecesor. Sin embargo, requiere que cada nodo manipule información extra: la dirección del nodo siguiente.
+
+_ Doble dispersión: el método consiste en disponer de dos funciones de hash. La primera obtiene a partir de la 
+llave la dirección de base, en la cual el registro será ubicado. De producirse overflow, se utilizará la segunda 
+función de hash. Esta segunda función no retorna una dirección, sino que su resultado es un desplazamiento. Este 
+desplazamiento se suma a la dirección base obtenida con la primera función, generando así la nueva dirección donde
+se intentará ubicar al registro. En caso de generarse nuevamente overflow, se deberá sumar de manera reiterada el
+desplazamiento obtenido, y así sucesivamente hasta encontrar una dirección con espacio suficiente para albergar al
+registro.
+    La doble dispersión tiende a esparcir los registros en saturación a lo largo del archivo de datos, pero con un
+efecto lateral importante. Los registros en overflow tienden a ubicarse “lejos” de sus direcciones de base, lo cual
+produce un mayor desplazamiento de la cabeza lectora/grabadora del disco rígido, aumentando el tiempo de respuesta.
+
+_ Saturación progresiva encadenada con área de desborde separada: ante la ocurrencia de overflow, los registros son 
+dispersados en nodos que no se  corresponden con su dirección base original. Así, a medida que se completa un archivo 
+por dispersión, pueden existir muchos registros ocupando direcciones que originalmente no les correspondían, disminuyendo
+la performance final del  método de hashing utilizado.
+Para evitar estas situaciones, se sugiere como alternativa el uso del área de desbordes por separado. Aquí se distinguen
+dos tipos de nodos: aquellos direccionables por la función de hash y aquellos de reserva, que solo podrán ser utilizados
+en caso de saturación pero que no son alcanzables por la función de hash.

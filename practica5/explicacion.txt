@@ -1,7 +1,7 @@
 Explicacion Practica Hashing
 
 Dispersion de archivos / Hashing
-    Un metodo para generar  una direccion base unica para una clave dadd.
+    Un metodo para generar  una direccion base unica para una clave dada.
     Convierte la clave en un numero aleatorio, que luego sirve para determinar donde
     se almacena la clave.
 
@@ -32,7 +32,7 @@ Algunos metodos para tratar overflows son:
     . Saturacion progresiva: ej: un archivo con 10 direcciones. Funcion de hash que devuelve un valor de 0 a 9.
     Si en la direc 1 tengo la clave z. Y quiero insertar la clave y, aplico hash en y me devulve la direc 1. 
     Que hago? Con este metodo a partir de la direccion que me devolvio el hash, busco de forma secuencial que 
-    direccion no esta ocupada. Se segui buscando de forma recursiva hasta que encuentre una direc. Lo malo es que
+    direccion no esta ocupada. Se sigue buscando de forma recursiva hasta que encuentre una direc. Lo malo es que
     cada vez que tengo q buscar la clave, tengo que buscarla a partir de la direccion que me devolvio el hashing.
     Esto genera mas accesos.
 
