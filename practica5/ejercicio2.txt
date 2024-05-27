@@ -1,0 +1,12 @@
+2. Explique el concepto de función de dispersión. Enumere al menos tres funciones de
+dispersión y explique brevemente cómo funciona cada una.
+
+_ Funcion de hash: esta funcion puede verse como una caja negra que recibe como entrada una clave,
+y produce una direccion de memoria donde almacenar el registro asociado a la clave en el archivo de
+datos.
+_ Es una funcion que transforma un valor, que representa una llave primaria de un registro, en otro
+valor dentro de un determinado rango, que se utiliza como direccion fisica de acceso para insertar
+un registro en un archivo de datos.
+
+Enumere al menos tres funciones de dispersión y explique brevemente cómo funciona cada una.
+_ Consultar.

@@ -1,7 +1,7 @@
 Explicacion Practica Hashing
 
 Dispersion de archivos / Hashing
-    Un metodo para generar  una direccion base unica para una clave dadd.
+    Un metodo para generar  una direccion base unica para una clave dada.
     Convierte la clave en un numero aleatorio, que luego sirve para determinar donde
     se almacena la clave.
 

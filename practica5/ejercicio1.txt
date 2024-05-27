@@ -1,0 +1,12 @@
+1. Defina el concepto de hashing (o dispersión). ¿Cómo se relaciona este concepto con
+archivos?
+
+_ Hashing o disperion es un metodo que mejora la eficiencia obtenida con arboles balanceados,
+asegurando en promedio un acceso para recuperar la informacion.
+Algunas definiciones:
+_ Técnica para generar una dirección base única para una clave dada. La dispersion se usa cuando
+se requiere acceso rápido por clave. 
+_ Tecnica que convierte la clave asociada a un registro de datos en un número aleatorio, que
+luego sirve para determinar dónde se almacena dicho registro.
+_ Tecnica de almacenamiento y recuperacion que usa una funcion para mapear registros en direcciones
+de almacenamiento en memoria secundaria.
