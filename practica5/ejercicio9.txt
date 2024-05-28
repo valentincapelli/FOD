@@ -1,0 +1,14 @@
+9. Para las siguientes claves, realice el proceso de dispersión mediante el método de hashing
+extensible, sabiendo que cada nodo tiene capacidad para dos registros. El número natural
+indica el orden de llegada de las claves.  Se debe mostrar el estado del archivo para cada
+operación. Justifique brevemente ante colisión y desborde los pasos que realiza.
+
+1   Borges      11110100    2   Sabato      00111111
+3   Cortazar    01010111    4   Lugones     10100101
+5   Casares     10101010    6   Walsh       01101011
+------------------------------------------------------------------------------------------------------
+1   Borges      11110100
+
+(0)     
+ 0-->       (0) 
+            (Borges)()

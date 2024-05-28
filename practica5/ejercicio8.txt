@@ -1,0 +1,145 @@
+8. Realice el proceso de dispersión mediante el método de hashing extensible, sabiendo que
+cada registro tiene capacidad para dos claves. El número natural indica el orden de
+llegada de las mismas. Se debe mostrar el estado del archivo para cada operación.
+Justifique brevemente ante colisión y desborde los pasos que realiza.
+
+1   Buenos Aires    ....1001    2   San Juan        ....0100
+3   Entre Ríos      ....1110    4   Corrientes      ....0010
+5   San Luis        ....0101    6   Tucumán         ....0111
+7   Rio Negro       ....0011    8   Jujuy           ....1111
+------------------------------------------------------------------------------------------------------
+1   Buenos Aires    ....1001
+
+(0)     
+ 0-->       (0) 
+            (Buenos Aires)() 
+
+- Se toman 0 bits del valor asociado a la tabla, entonces Buenos Aires se inserta en el nodo 0.
+
+------------------------------------------------------------------------------------------------------
+2   San Juan        ....0100
+
+(0)     
+ 0-->       (0) 
+            (Buenos Aires)(San Juan)
+
+- Como el valor asociado a la tabla sigue en 0, entonces San Juan se inserta en el unico nodo que hay.
+- Se genera colision pero no desborde.
+
+------------------------------------------------------------------------------------------------------
+3   Entre Ríos      ....1110
+
+(1)     
+ 0-->       (1) 
+            (San Juan)(Entre Rios)
+
+ 1-->       (1) 
+            (Buenos Aires)()
+
+- Se toma 0 bits por el valor asociado a la tabla, entonces Entre Rios debe insertarse en el nodo 0, pero el nodo 0 
+esta colmado, se genera overflow. Al no disponer de celdas suficientes en la tabla en memoria principal, se duplica
+el espacio disponible, a partir de ese momento se necesita 1 bit, para poder direccionar un registro. La celda de
+referencia 0 contiene la direccion del nodo saturado, en la 1 contiene la direccion del nuevo nodo.
+- Se redispersan San Juan, Entre Rios y Buenos Aires.
+
+------------------------------------------------------------------------------------------------------
+4   Corrientes      ....0010
+
+(2)     
+ 00-->      (2) 
+            (San Juan)()
+
+ 10-->      (2) 
+            (Entre Rios)(Corrientes)
+
+ 01-->      (1) 
+ 11-->      (Buenos Aires)()
+
+ - Se toma 1 bit por el valor asociado a la tabla, entonces Corrientes debe insertarse en el nodo 0, pero el nodo 0 
+esta colmado, se genera overflow. Al no disponer de celdas suficientes en la tabla en memoria principal, se duplica
+el espacio disponible, a partir de ese momento se necesita 2 bits para poder direccionar un registro. La celda de
+referencia 00 contiene la direccion del nodo saturado, en la 10 contiene la direccion del nuevo nodo.
+- Se redispersan San Juan, Entre Rios y Corrientes.
+
+------------------------------------------------------------------------------------------------------
+5   San Luis        ....0101
+
+(2)     
+ 00-->      (2) 
+            (San Juan)()
+
+ 10-->      (2) 
+            (Entre Rios)(Corrientes)
+
+ 01-->      (1) 
+ 11-->      (Buenos Aires)(San Luis)
+
+ - Como se toman los dos ultimos bits, San Luis debe insertarse en el nodo 1, como hay lugar se produce colision
+ pero no hay overflow. Se inserta sin problemas.
+
+-------------------------------------------------------------------------------------------------------
+6   Tucumán         ....0111
+
+(2)     
+ 00-->      (2) 
+            (San Juan)()
+
+ 10-->      (2) 
+            (Entre Rios)(Corrientes)
+
+ 01-->      (2)
+            (Buenos Aires)(San Luis)
+
+ 11-->      (2)
+            (Tucumán)()
+
+- Como se toman los dos ultimos bits, Tucumán debe insertarse en el nodo 1, pero el nodo 1 esta lleno, se produce
+overflow. Se incrementa en 1 el valor asociado al nodo y se crea un nodo nuevo en la direccion de referencia 11.
+Como el valor asociado al nodo con overflow no es mayor al valor asociado la tabla, no se duplican las direcciones.
+- Se redireccionan Buenos Aires, San Luis y Tucumán.
+
+-------------------------------------------------------------------------------------------------------
+7   Rio Negro       ....0011
+
+(2)     
+ 00-->      (2) 
+            (San Juan)()
+
+ 10-->      (2) 
+            (Entre Rios)(Corrientes)
+
+ 01-->      (2)
+            (Buenos Aires)(San Luis)
+
+ 11-->      (2)
+            (Tucumán)(Rio Negro)
+
+ - Como se toman los dos ultimos bits, Rio Negro debe insertarse en el nodo 11, como hay lugar se produce colision
+ pero no hay overflow. Se inserta sin problemas.
+
+--------------------------------------------------------------------------------------------------------
+8   Jujuy           ....1111
+
+(2)     
+ 000-->      (2) 
+ 100-->      (San Juan)()
+
+ 010-->      (2) 
+ 110-->      (Entre Rios)(Corrientes)
+
+ 001-->      (2)
+ 101-->      (Buenos Aires)(San Luis)
+
+ 011-->      (3)
+             (Rio Negro)()
+
+ 111-->      (3)
+             (Tucumán)(Jujuy)
+
+- Como se toman los dos ultimos bits, Jujuy debe insertarse en el nodo 11, pero como este esta lleno se produce
+overflow. Se incrementa el valor asociado a ese nodo y se crea un nuevo nodo con ese mismo valor. Como el valor
+asociado al nodo es mayor al valor asociado a la tabla, se incrementa ese valor y se se duplican las direcciones.
+A partir de ese momento se empiezan a tomar desde los ultimos 3 bits para direccionar un registro.
+- La celda de referencia 011 contiene la dirección del nodo con overflow, mientras que la celda de referencia 111 
+contiene la dirección del nuevo nodo.
+- Se redispersan Rio Negro, Tucuman y Jujuy.
