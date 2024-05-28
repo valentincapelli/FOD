@@ -14,7 +14,7 @@ bits que es necesario tomar de la función de hash
  ^
  |
 (0)     
- 0-->       (0) --> Valor asociado al nodo
+ 0-->       0 --> Valor asociado al nodo
  |          ()() --> Nodos en disco
  |
  |
@@ -29,7 +29,7 @@ bits que es necesario tomar de la función de hash
             (Darin)()
 
  - Se toman tantos bits como indica el valor asociado a la tabla, como es 0, indica que hay una sola direccion del
- nodo disponible y Darin debera insertarse en dicho nodo.
+ nodo disponible y Darin debera insertarse en dicho nodo.(no es necesario evaluar ningun bit de la clave para realizar la insercion)
 
  ------------------------------------------------------------------------------------------------------------------
  2   Alterio      11110100
@@ -38,8 +38,8 @@ bits que es necesario tomar de la función de hash
   0-->      (0)
             (Darin)(Alterio)
 
- - Se toman tantos bits del valor asociado a la tabla , como es 0, procedemos a insertar Alterio en el nodo 0, dado que
- no se produce overflow.
+ - Se toman tantos bits del valor asociado a la tabla , como es 0, no es necesario evaluar ningun bit de la clave para realizar la insercion, 
+ se genera colision no se produce overflow.
 
  ------------------------------------------------------------------------------------------------------------------
  3    Sbaraglia  10100101
@@ -56,6 +56,7 @@ este tiene su capacidad colmada. Se produce overflow, se aumenta en uno el valor
 un nuevo nodo con el mismo valor asociado al nodo saturado. Se compara el valor del nodo con overflow con el valor
 asociado a la tabla, como el primero es mayor que el segundo, se generan mas direcciones. Se duplican la cantidad de 
 direcciones, y el valor asociado a la tabla aumenta en 1.
+Se realiza la redispersion evaluando las claves involucradas. 
 
 ------------------------------------------------------------------------------------------------------------------
  4   De la Serna  01010111

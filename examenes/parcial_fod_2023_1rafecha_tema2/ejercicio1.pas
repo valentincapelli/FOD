@@ -38,7 +38,7 @@ type
                 seek(arch, aux.codigo*(-1));
                 read(arch,aux);
                 seek(arch, filepos(arch)-1);
-                write(arch,n);
+                write(arch,e);
                 seek(arch,0);
                 write(arch,aux); 
             end
@@ -55,22 +55,20 @@ type
     procedure quitarEmpleado(var arch:archivoEmpleados);
     var
         dni:integer;
+        newHead, oldHead, aux:empleado;
     begin
         ingreseDNI(dni);
         if (existeEmpleado(arch,dni)) then begin
             reset(arch);
-            read(arch, aux);
-            oldHead:= aux.dni;
+            read(arch, oldHead);
             while (not eof(arch)) and (aux.dni <> dni) do
                 read(arch,aux);
             if (aux.dni = dni) then begin
-                aux.dni:= oldHead;
                 seek(arch,filepos(arch)-1);
-                newHead:= (filepos(arch)*-1)
-                write(arch,aux);
+                newHead.dni:= (filepos(arch)*-1)
+                write(arch,oldHead);
                 seek(arch,0);
-                aux.codigo:= newHead;
-                write(arch,n);
+                write(arch,newHead);
                 writeln('El empleado fue borrado.');
             end;
             close(arch);

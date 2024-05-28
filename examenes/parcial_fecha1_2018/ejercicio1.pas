@@ -57,7 +57,7 @@ type
         reset(mae);
         while (not eof(mae)) and (regm.anio <> year) do
             read(mae,regm);
-        if (regm.anio = year) then begin
+        if (not eof(mae)) and (regm.anio = year) then begin
             writeln('Año: ', year);
             aniototal:= 0;
             while (regm.anio = year) and (not eof(mae)) do begin

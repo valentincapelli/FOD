@@ -96,7 +96,8 @@ referencia 00 contiene la direccion del nodo saturado, en la 10 contiene la dire
 - Como se toman los dos ultimos bits, Tucumán debe insertarse en el nodo 1, pero el nodo 1 esta lleno, se produce
 overflow. Se incrementa en 1 el valor asociado al nodo y se crea un nodo nuevo en la direccion de referencia 11.
 Como el valor asociado al nodo con overflow no es mayor al valor asociado la tabla, no se duplican las direcciones.
-- Se redireccionan Buenos Aires, San Luis y Tucumán.
+Se dividen los enlaces de acceso de la tabla mitad al nodo saturado y la otro mitad al nodo nuevo.
+- Se redispersan Buenos Aires, San Luis y Tucumán.
 
 -------------------------------------------------------------------------------------------------------
 7   Rio Negro       ....0011
