@@ -7,8 +7,118 @@ operación. Justifique brevemente ante colisión y desborde los pasos que realiz
 3   Cortazar    01010111    4   Lugones     10100101
 5   Casares     10101010    6   Walsh       01101011
 ------------------------------------------------------------------------------------------------------
+(0)     
+ 0-->       (0) 
+            ()()
+
+------------------------------------------------------------------------------------------------------
 1   Borges      11110100
 
 (0)     
  0-->       (0) 
             (Borges)()
+
+- No se toma ningun bit para dispersar la clave Borges, osea que hay una sola direccion del nodo disponible
+y debe insertarse en ese. No hay colision ni saturacion por que esta vacio.
+
+------------------------------------------------------------------------------------------------------
+2   Sabato      00111111
+
+(0)     
+ 0-->       (0) 
+            (Borges)(Sabato)
+
+- No se toma ningun bit para dispersar la clave Sabato, osea que hay una sola direccion del nodo disponible
+y debe insertarse en ese. Como queda un espacio disponible, se genera colision y se puede insertar, no hay
+overflow.
+
+------------------------------------------------------------------------------------------------------
+3   Cortazar    01010111
+
+(1)     
+ 0-->       (1) 
+            (Borges)()
+
+ 1-->       (1) 
+            (Cortazar)(Sabato)
+
+- No se toma ningun bit para dispersar la clave Borges, osea que hay una sola direccion del nodo disponible
+y debe insertarse en ese, pero ahora el unico nodo disponible tiene su capacidad colmada.
+- Se aumentan en uno el valor asociado al nodo saturado.
+- Se genera un nuevo nodo con el mismo valor asociado al nodo saturado.
+- Se compara el valor del nodo con el valor asociado a la tabla, como el primero es mayor que el segundo
+significa que no dispone de entradas suficientes para direccionar al nuevo nodo. Entonces la cantidad de 
+celdas de la tabla se duplica y el valor asociado a la tabla se incrementa en uno.
+- A partir de este momento es necesario tomar 1 bit de la funcion de hash para direccionar las claves.
+- La primera celda de la tabla direcciona al nodo saturado(0), y la nueva apunta al nuevo nodo generado(1).
+
+------------------------------------------------------------------------------------------------------
+4   Lugones     10100101
+
+(2)     
+00-->       (1) 
+10-->       (Borges)()
+
+01-->       (2) 
+            (Lugones)()
+
+11-->       (2) 
+            (Cortazar)(Sabato)
+
+- Se toma 1 bit para dispersar la clave Lugones, entonces deberia insertarse en el nodo referenciado por el 1,
+pero este nodo como esta colmado, genera overflow.
+- Se aumentan en uno el valor asociado al nodo saturado.
+- Se genera un nuevo nodo con el mismo valor asociado al nodo saturado.
+- Se compara el valor del nodo con el valor asociado a la tabla, como el primero es mayor que el segundo
+significa que no dispone de entradas suficientes para direccionar al nuevo nodo. Entonces la cantidad de 
+celdas de la tabla se duplica y el valor asociado a la tabla se incrementa en uno.
+- A partir de este momento es necesario tomar 2 bits de la funcion de hash para direccionar la clave de un
+registro.
+- La celda 01 contiene la direccion del nodo saturado, y la celda 11 contiene la direccion del nodo nuevo.
+- Se redispersan las claves involucradas(Lugones, Cortazar y Sabato).
+
+------------------------------------------------------------------------------------------------------
+5   Casares     10101010
+
+(2)     
+00-->       (1) 
+10-->       (Borges)(Casares)
+
+01-->       (2) 
+            (Lugones)()
+
+11-->       (2) 
+            (Cortazar)(Sabato)
+
+- Se toma 2 bits para dispersar la clave Casares, entonces deberia insertarse en el nodo direccionado por la 
+celda 10. Como tiene lugar, se genera colision pero se puede insertar sin problemas.
+
+------------------------------------------------------------------------------------------------------
+6   Walsh       01101011
+
+(3)     
+000-->      (1) 
+100-->      (Borges)(Casares)
+010-->
+110-->
+
+001-->      (2) 
+101-->      (Lugones)()
+
+011-->      (3) 
+            (Walsh)()
+
+111-->      (3) 
+            (Cortazar)(Sabato)
+
+- Se toma 2 bits para dispersar la clave Walsh, entonces deberia insertarse en el nodo direccionado por la 
+celda 11. Como esta colmada, se genera overflow.
+- Se aumentan en uno el valor asociado al nodo saturado.
+- Se genera un nuevo nodo con el mismo valor asociado al nodo saturado.
+- Se compara el valor del nodo con el valor asociado a la tabla, como el primero es mayor que el segundo
+significa que no dispone de entradas suficientes para direccionar al nuevo nodo. Entonces la cantidad de 
+celdas de la tabla se duplica y el valor asociado a la tabla se incrementa en uno.
+- A partir de este momento es necesario tomar 3 bits de la funcion de hash para direccionar la clave de un
+registro.
+- La celda 011 contiene la direccion del nodo saturado, y la celda 111 contiene la direccion del nodo nuevo.
+- Se redispersan las claves involucradas(Lugones, Cortazar, Sabato y Walsh).

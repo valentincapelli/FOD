@@ -1,0 +1,115 @@
+11. Para las siguientes claves, realice el proceso de dispersión mediante el método de
+hashing extensible, sabiendo que cada nodo tiene capacidad para dos registros. El
+número natural indica el orden de llegada de las claves.  Se debe mostrar el estado del
+archivo para cada operación. Justifique brevemente ante colisión y desborde los pasos
+que realiza.
+
+1   Verón       01100010    4   Sosa        10001000
+2   Braña       01010111    5   Pavone      11110101
+3   Calderón    00110100    6   Andújar     00101001
+------------------------------------------------------------------------------------------------------
+(0)     
+ 0-->       (0) 
+            ()()
+
+------------------------------------------------------------------------------------------------------
+1   Verón       01100010    4
+
+(0)     
+ 0-->       (0) 
+            (Veron)()
+
+- No se toma ningun bit para dispersar la clave Veron, entonces se inserta en el unico nodo disponible.
+
+------------------------------------------------------------------------------------------------------
+2   Braña       01010111
+
+(0)     
+ 0-->       (0) 
+            (Veron)(Braña)
+
+- No se toma ningun bit para dispersar la clave Braña, entonces se inserta en el unico nodo disponible. Se
+genera colision.
+
+------------------------------------------------------------------------------------------------------
+3   Calderón    00110100
+
+(1)     
+ 0-->       (1) 
+            (Calderón)(Veron)
+
+ 1-->       (1) 
+            (Braña)()
+
+- No se toma ningun bit para dispersar la clave Calderón, entonces el unico nodo posible es el direccionado
+por la celda 0, pero como esta colmada, se genera overflow. 
+- Se incrementa en 1 el valor asociado al nodo con overflow.
+- Se crea un nodo nuevo con el mismo valor asociado al nodo con overflow.
+- Se compara el valor asociado al nodo con overflow con el valor asociado de la tabla, como el primero es
+mas grande, se debe incrementar en 1 el valor asociado a la tabla y se duplican las direcciones de la tabla.
+- La celda 0 tiene la direccion del nodo saturado y la celda 1 tiene la direccion del nodo nuevo.
+- Se redispersan las claves involucradas (Calderón, Veron, Braña).
+
+------------------------------------------------------------------------------------------------------
+4   Sosa        10001000
+
+(2)     
+ 00-->      (2) 
+            (Calderón)(Sosa)
+
+ 10-->      (2) 
+            (Veron)()
+
+ 01-->      (1) 
+ 11-->      (Braña)()
+
+- Se toma el bit menos significativo para dispersar la clave Sosa, entonces deberia ir al nodo direccionado por la
+ celda 0, pero como esta colmado, se genera overflow.
+- Se incrementa en 1 el valor asociado al nodo con overflow.
+- Se crea un nodo nuevo con el mismo valor asociado al nodo con overflow.
+- Se compara el valor asociado al nodo con overflow con el valor asociado de la tabla, como el primero es
+mas grande, se debe incrementar en 1 el valor asociado a la tabla y se duplican las direcciones de la tabla.
+- La celda 00 tiene la direccion del nodo saturado y la celda 10 tiene la direccion del nodo nuevo.
+- Se redispersan las claves involucradas (Calderón, Veron, Sosa).
+
+------------------------------------------------------------------------------------------------------
+5   Pavone      11110101
+
+(2)     
+ 00-->      (2) 
+            (Calderón)(Sosa)
+
+ 10-->      (2) 
+            (Veron)()
+
+ 01-->      (1) 
+ 11-->      (Braña)(Pavone)
+
+ - Se toman los dos ultimos bits para dispersar la clave Pavone, entonces se inserta en el nodo direccionado por la
+ celda 01. Se genera colision.
+
+ ------------------------------------------------------------------------------------------------------
+6   Andújar     00101001
+
+(2)     
+ 00-->      (2) 
+            (Calderón)(Sosa)
+
+ 10-->      (2) 
+            (Veron)()
+
+ 01-->      (2) 
+            (Andújar)(Pavone)
+
+ 11-->      (2)
+            (Braña)()
+
+- Se toma los dos bits menos significativos para dispersar la clave Andújar, entonces deberia ir al nodo direccionado por la
+ celda 01, pero como esta colmado, se genera overflow.
+- Se incrementa en 1 el valor asociado al nodo con overflow.
+- Se crea un nodo nuevo con el mismo valor asociado al nodo con overflow.
+- Se compara el valor asociado al nodo con overflow con el valor asociado de la tabla, como el primero NO es
+mas grande, NO se debe incrementar en 1 el valor asociado a la tabla.
+- La celda 01 tiene la direccion del nodo saturado y la celda 11 tiene la direccion del nodo nuevo.
+- Se redispersan las claves involucradas (Andújar, Pavone, Braña).
+

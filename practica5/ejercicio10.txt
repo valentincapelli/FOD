@@ -1,0 +1,115 @@
+10. Para las siguientes claves, realice el proceso de dispersión mediante el método de
+hashing extensible, sabiendo que cada nodo tiene capacidad para dos registros. El
+número natural indica el orden de llegada de las claves.  Se debe mostrar el estado del
+archivo para cada operación. Justifique brevemente ante colisión y desborde los pasos
+que realiza.
+
+1   Guillermo.B     01100011    4   Gomez     00000001
+2   Gustavo.B       01010110    5   Sosa      11110100
+3   Enria           00110101    6   Guli      00101000
+------------------------------------------------------------------------------------------------------
+(0)     
+ 0-->       (0) 
+            ()()
+
+------------------------------------------------------------------------------------------------------
+1   Guillermo.B     01100011
+
+(0)     
+ 0-->       (0) 
+            (Guillermo.B)()
+
+- No se toma ningun bit para dispersar la clave Guillermo.B, hay solo un nodo posible y se inserta en ese,
+el direccionado por la celda 0.
+
+------------------------------------------------------------------------------------------------------
+2   Gustavo.B       01010110
+
+(0)     
+ 0-->       (0) 
+            (Guillermo.B)(Gustavo.B)
+
+- No se toma ningun bit para dispersar la clave Guillermo.B, entonces el unico nodo posible es el direccionado
+por la celda 0, se genera colision.
+
+------------------------------------------------------------------------------------------------------
+3   Enria           00110101
+
+(1)     
+ 0-->       (1) 
+            (Gustavo.B)()
+
+ 1-->       (1) 
+            (Enria)(Guillermo.B)
+
+- No se toma ningun bit para dispersar la clave Enria, entonces el unico nodo posible es el direccionado
+por la celda 0, pero como esta colmada, se genera overflow. 
+- Se incrementa en 1 el valor asociado al nodo con overflow.
+- Se crea un nodo nuevo con el mismo valor asociado al nodo con overflow.
+- Se compara el valor asociado al nodo con overflow con el valor asociado de la tabla, como el primero es
+mas grande, se debe incrementar en 1 el valor asociado a la tabla y se duplican las direcciones de la tabla.
+- La celda 0 tiene la direccion del nodo saturado y la celda 1 tiene la direccion del nodo nuevo.
+- Se redispersan las claves involucradas (Gustavo.B, Guillermo.B,Enria).
+
+------------------------------------------------------------------------------------------------------
+4   Gomez     00000001
+
+(2)     
+ 00-->      (1) 
+ 10-->      (Gustavo.B)()
+
+ 01-->      (2) 
+            (Enria)(Gomez)
+
+ 11-->      (2) 
+            (Guillermo.B)()
+
+- Se toma el bit menos significativo para dispersar la clave Gomez, entonces se debe insertar en el nodo
+direccionado por la celda 1, pero como esta colmada, se genera overflow.
+- Se incrementa en 1 el valor asociado al nodo con overflow.
+- Se crea un nodo nuevo con el mismo valor asociado al nodo con overflow.
+- Se compara el valor asociado al nodo con overflow con el valor asociado de la tabla, como el primero es
+mas grande, se debe incrementar en 1 el valor asociado a la tabla y se duplican las direcciones de la tabla.
+- La celda 01 tiene la direccion del nodo saturado y la celda 11 tiene la direccion del nodo nuevo.
+- Se redispersan las claves involucradas (Gustavo.B, Guillermo.B, Enria, Gomez).
+
+------------------------------------------------------------------------------------------------------
+5   Sosa      11110100
+
+(2)     
+ 00-->      (1) 
+ 10-->      (Gustavo.B)(Sosa)
+
+ 01-->      (2) 
+            (Enria)(Gomez)
+
+ 11-->      (2) 
+            (Guillermo.B)()
+
+- Se toma los dos ultimos bits para dispersar la clave Gomez, entonces se debe insertar en el nodo
+direccionado por la celda 00, se genera colision pero se inserta correctamente.
+
+------------------------------------------------------------------------------------------------------
+6   Guli      00101000
+
+(2)     
+ 00-->      (2) 
+            (Guli)(Sosa)
+
+ 10-->      (2)
+            (Gustavo.B)()
+
+ 01-->      (2) 
+            (Enria)(Gomez)
+
+ 11-->      (2) 
+            (Guillermo.B)()
+
+- Se toma los dos ultimos bits para dispersar la clave Guli, entonces se debe insertar en el nodo
+direccionado por la celda 00, pero como esta colmado, se genera overflow.
+- Se incrementa en 1 el valor asociado al nodo con overflow.
+- Se crea un nodo nuevo con el mismo valor asociado al nodo con overflow.
+- Se compara el valor asociado al nodo con overflow con el valor asociado de la tabla, como el primero no es
+mas grande, no se duplican las direcciones de la tabla.
+- La celda 00 tiene la direccion del nodo saturado y la celda 10 tiene la direccion del nodo nuevo.
+- Se redispersan las claves involucradas (Guli, Sosa, Gustavo.B).
