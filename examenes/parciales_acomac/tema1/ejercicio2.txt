@@ -1,0 +1,72 @@
+Arboles
+Dado un árbol B de orden 5  y con política izquierda, para cada operación dada:
+a. Dibuje el árbol resultante
+b. Explique las decisiones tomadas
+c. Escriba las lecturas y escrituras
+Operaciones: -20, +2400, -200, -1400, -1600
+
+                                            nodo 2: 4 i 0(200)3(600)1(900)5(1200)4
+
+nodo 0: 1 h(20)         nodo 3: 2 h(400)(500)       nodo 1: 2 h(700)(800)       nodo 5: 2 h(1000)(1100)     nodo 4: 4 h(1400)(1600)(1800)(2000)
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+-20
+
+                                            nodo 2: 4 i 0(400)3(600)1(900)5(1200)4
+
+nodo 0: 1 h(200)         nodo 3: 2 h(500)       nodo 1: 2 h(700)(800)       nodo 5: 2 h(1000)(1100)     nodo 4: 4 h(1400)(1600)(1800)(2000)
+
+L2, L1, L3, E1, E3, E2
+
+- Elimino la clave 20 del nodo 0, pero queda en underflow, entonces reistribuyo con el nodo 3.
+
+------------------------------------------------------------------------------------------------------------------------------------------------
++2400
+                                                        8: 1 i 2(900)7
+
+                                2: 2 i 0(400)3(600)1                      7: 2 i 5(1200)4(1800)6
+
+    0: 1 h(200)         3: 1 h(500)       1: 2 h(700)(800)       5: 2 h(1000)(1100)     4: 2 h(1400)(1600)    6: 2 h(2000)(2400)
+
+L2, L4, E4, E6, E2, E7, E8
+
+- Intento agregar la clave 2400 en el nodo 4 pero se genera overflow, divido, creo el nodo 6 y promociono la clave 1800. Se propaga el overflow
+al nodo 2, vuelvo a dividir, creo el nodo 7 y promociono el 900 al nuevo nodo 8.
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+-200
+                                                        8: 1 i 2(900)7
+
+                                2: 2 i 0(600)1                      7: 2 i 5(1200)4(1800)6
+
+    0: 2 h(400)(500)       1: 2 h(700)(800)       5: 2 h(1000)(1100)     4: 2 h(1400)(1600)    6: 2 h(2000)(2400)
+
+L8, L2, L0, L3, E0, E2     Pila: nodo 3
+
+- Elimino la clave 200 del nodo 0, se genera underflow, como no tiene hermano izquierdo, intento redistribuir con el derecho, como no se puede tampoco
+fusiono con el hermano derecho, liberando el nodo 3.
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+-1400
+                                                        8: 1 i 2(900)7
+
+                                2: 2 i 0(600)1                      7: 2 i 5(1200)4(1800)6
+
+    0: 2 h(400)(500)       1: 2 h(700)(800)       5: 2 h(1000)(1100)     4: 1 h(1600)    6: 2 h(2000)(2400)
+
+L8, L7, L4, E4
+
+- Se elimina la clave 1400 del nodo 4 correctamente.
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+-1600
+                                                        8: 1 i 2(900)7
+
+                                2: 2 i 0(600)1                      7: 2 i 5(1100)4(1800)6
+
+    0: 2 h(400)(500)       1: 2 h(700)(800)       5: 2 h(1000)     4: 1 h(1200)    6: 2 h(2000)(2400)
+
+L8, L7, L4, L5, E5, E4, E7
+
+- Elimino la clave 1600 del nodo 4, genera underflow, como es politica izquierda redistribuyo con el hermano izquierdo, osea el nodo 5.
+- Baja la clave 1200 del padre, y sube la clave 1100 del nodo 5.
