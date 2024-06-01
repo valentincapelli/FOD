@@ -81,7 +81,7 @@ type
                 codigoActual:= min.codigo;
                 total:= 0;
                 while (codigoActual == min.codigo) do begin
-                    if (regm.totalEjemplares > min.ejemplaresVendidos) then begin
+                    if (regm.totalEjemplares >= min.ejemplaresVendidos) then begin
                         regm.totalEjemplares:= regm.totalEjemplares - min.ejemplaresVendidos;
                         regm.ejemplaresVendidos:= regm.ejemplaresVendidos + min.ejemplaresVendidos;
                         total:= total + min.ejemplaresVendidos;

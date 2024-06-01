@@ -85,7 +85,7 @@ celdas de la tabla se duplica y el valor asociado a la tabla se incrementa en un
  101-->     ()()
 
  011-->     (3) 
-            (BMW)()
+            (BMW)() 
 
  111-->     (3) 
             (Alfa Romeo)(Nissan)
@@ -203,21 +203,32 @@ celdas de la tabla NO se duplica.
 - Se genera colision, ya que el nodo no esta vacio.
 
 -----------------------------------------------------------------------------------------------------------------------------
-10  Renault     11100011
+10 Renault 11100011
 
-(3)     
- 000-->     (2) 
- 100-->     (Toyota)(Ford)
- 
- 010-->     (2)
- 110-->     (Audi)(Peugeot)
+(4)          (2)   
+ 0000:       (Toyota)(Ford)
+ 1000:
+ 0100:
+ 1100:   
 
+             (2)
+ 0010:       (Peugeot)(Audi)
+ 0110:
+ 1110:
+ 1010:
 
- 001-->     (2) 
- 101-->     (Fiat)()
+             (2)
+ 0001:       (Fiat)()
+ 1001:
+ 0101:
+ 1101:
 
- 011-->     (3) 
-            (BMW)(Suzuki)
+             (4)
+ 0011:       (Renault)()
 
- 111-->     (3) 
-            (Alfa Romeo)(Nissan)
+             (4)
+ 1011:       (BMW)(Suzuki)
+
+             (3)
+ 0111:       (Alfa Romeo)(Nissan)   
+ 1111:
