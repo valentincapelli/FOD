@@ -1,4 +1,4 @@
-{15. La editorial X, autora de diversos semanarios, posee un archivo maestro con la información
+{La editorial X, autora de diversos semanarios, posee un archivo maestro con la información
 correspondiente a las diferentes emisiones de los mismos. De cada emisión se registra:
 fecha, código de semanario, nombre del semanario, descripción, precio, total de ejemplares
 y total de ejemplares vendido.
@@ -13,106 +13,99 @@ Nota: Todos los archivos están ordenados por fecha y código de semanario. No s
 ventas de semanarios si no hay ejemplares para hacerlo}
 
 program ejercicio15;
-const
-    dimf = 100;
-    valoralto = "ZZZZ";
+const 
+    valorAlto := 'ZZZZ';
 type
-    registroMaestro = record
-        fecha:string[20];
-        codigo:integer;
-        nombre:string[40];
-        desc:string;
-        precio:real;
-        totalEjemplares:integer;
-        ejemplaresVendidos:integer;
+    semanario = record
+        fecha : string;
+        codigo : integer;
+        nombre : string;
+        descripcion : string;
+        precio : real;
+        total : integer;
+        totalVendidos : integer;
     end;
-    maestro = file of registroMaestro;
 
-    registroDetalle = record
-        fecha:string[20];
-        codigo:integer;
-        ejemplaresVendidos:integer;
+    venta = record
+        fecha : string;
+        codigo : integer;
+        totalVendidos : integer;
     end;
-    detalle = file of registroDetalle;
 
+    maestro = file of semanario;
+    detalle = file of venta;
     vectorDetalles = array [1..dimf] of detalle;
-    vectorRegistroDetalle = array [1..dimf] of registroDetalle;
+    vectorRegistros = array [1..dimf] of venta;
 
-    procedure leer(var det:detalle; var regd:registroDetalle);
-    begin
-        if (not eof(det)) then
-            read(det,regd);
-        else
-            regd.fecha:= valoralto;
-    end;
-
-    procedure minimo(var vd:vectorDetalles; var vrd:vectorRegistroDetalle; var min:registroDetalle);
-    begin
-        min.fecha:= valoralto;
-        min.codigo:= 9999;
-        for i:= 1 to dimf do begin
-            if (vrd[i].fecha < min.fecha) or (vrd[i].fecha = min.fecha) and (vrd[i].codigo < min.codigo) then
-                min:= vrd[i];
-                pos:= i;
-            end;
-        end;
-        if (min.fecha <> valoralto) then
-            leer(vd[pos],vrd[pos]);
-    end;
-
-    procedure actualizarMaestro(var mae:maestro; vd:vectorDetalles);
-    var
-        vrd:vectorRegistroDetalle;
-        total,min,maxVentas,codigoActual,i:integer;
-        maxFecha,maxNombre,minFecha,minNombre,fechaActual:string;
-    begin
-        maxVentas:= -1;
-        minVentas:= 9999;
-        reset(mae);
-        for i:= 1 to dimf do begin
-            reset(vd[i]);
-            leer(vd[i],vrd[i]);
-        end;
-        read(mae,regm);
-        minimo(vd,vrd,min);
-        while (min.fecha <> valoralto) do begin
-            fechaActual:= min.fecha;
-            while (fechaActual == min.fecha) do begin
-                codigoActual:= min.codigo;
-                total:= 0;
-                while (codigoActual == min.codigo) do begin
-                    if (regm.totalEjemplares >= min.ejemplaresVendidos) then begin
-                        regm.totalEjemplares:= regm.totalEjemplares - min.ejemplaresVendidos;
-                        regm.ejemplaresVendidos:= regm.ejemplaresVendidos + min.ejemplaresVendidos;
-                        total:= total + min.ejemplaresVendidos;
-                    end
-                    else writeln('No hay ejemplares suficientes para realizar la venta.');
-                    if (total > maxVentas) then begin
-                        maxVentas:= total;
-                        maxFecha:= min.fecha;
-                        maxNombre:= min.nombre;
-                    end
-                    else if (total < minVentas) then begin
-                        minVentas:= total;
-                        minFecha:= min.fecha;
-                        minNombre:= min.nombre;
-                    end;
-                    minimo(vd,vrd,min);
-                end;
-                while (fechaActual <> regm.fecha) and (codigoActual <> regm.codigo) do
-                    read(mae,regm);
-                seek(mae, filepos(mae)-1);
-                write(mae,regm);
-            end;
-        end;
-        close(mae);
-        writeln('Semanario con más ventas: ', maxNombre, ' Fecha: ', maxFecha, ' Ventas: ', maxVentas);
-        writeln('Semanario con menos ventas: ', minNombre, ' Fecha: ', minFecha, ' Ventas: ', minVentas);
-    end;
-
-var
+procedure leer(var  det : detalle; var v : venta);
 begin
-    cargarMaestro(mae);  // se dispone
-    cargarDetalles(vd); // se dispone
-    actualizarMaestro(mae,vd);
+    if (not eof (det)) then
+        read(det, v)
+    else
+        v.fecha := valorAlto;
+end;
+
+procedure minimo(var vd : vectorDetalles; var vr : vectorRegistros; var min : venta);
+var
+    i, pos : integer;
+begin
+    min.fecha := valorAlto;
+    min.codigo := 9999;
+    for i := 1 to dimf do begin
+        if (vr[i].fecha < min.fecha) or (vr[i].codigo < min.codigo and vr[i].fecha = min.fecha) then begin
+            min := vr[i];
+            pos := i;  
+        end;
+    end;
+    if(min.fecha <> valorAlto) then
+        leer(vd[pos], vr[pos]);
+end;
+
+procedure actualizarMaestro(var mae : maestro; var vd : vectorDetalles);
+var
+    vr : vectorRegistros;
+    regM : emision;
+    fechaMax, fechaMin : string;
+    i, maxVentas, minVentas, codigoMax, codigoMin : integer;
+    min : venta;
+begin
+    reset(mae);
+    read(mae, regM);
+    for i := 1 to dimf do begin
+        reset(vd[i]);
+        leer(vd[i], vr[i]);
+    end;
+    minimo(vd, vr, min);
+    while(min.fecha <> valorAlto)do begin
+        fecha := min.fecha;
+        while(min.fecha = fecha) do begin
+            codigo := min.codigo;
+            cantVentas := 0;
+            while(min.fecha = fecha) and (min.codigo = codigo)do begin
+                cantVentas := cantVentas + min.totalVendidos;
+                minimo(vd, vr, min);
+            end;
+            if (maxVentas > cantVentas) then begin
+                maxVentas := cantVentas;
+                fechaMax := fecha;
+                codigoMax := codigo;
+            end
+            else if (minVentas < cantVentas) then begin
+                minVentas := cantVentas;
+                fechaMin := fecha;
+                codigoMin := codigo;
+            end
+            while(fecha <> regM.fecha) and (codigo <> regM.codigo) do 
+                read(mae, regM);
+            seek(mae, filepos(mae)-1);
+            regM.total := regM.total - cantVentas;
+            regM.totalVendidos := regM.totalVendidos + cantVentas;
+            write(mae, regM)
+        end;
+    end;
+    writeln('Semanario con mas ventas: Fecha=', fechaMax, ' Codigo=', codigoMax);
+    writeln('Semanario con menos ventas: Fecha=', fechaMin, ' Codigo=', codigoMin);
+    for i := 1 to dimf do 
+        close(vd[i]);
+    close(mae);
 end;
