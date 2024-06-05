@@ -1,0 +1,234 @@
+3. Archivos Directos
+Realice el proceso de dispersión mediante el método de hashing extensible, sabiendo que cada registro tiene capacidad
+para dos claves. El número natural indica el orden de llegada de las mismas. Deberá explicar los pasos que realiza en 
+cada operación y dibujar los estados sucesivos correspondiente.
+
+1   Alfa Romeo  10100111
+2   Peugeot     10101010
+3   Audi        00111110
+4   Nissan      01101111
+5   BMW         01101011
+6   Toyota      11110000
+7   Fiat        01011101
+8   Suzuki      01011011
+9   Ford        00110100
+10  Renault     11100011
+
+-----------------------------------------------------------------------------------------------------------------------------
+(0)     
+ 0-->       (0) 
+            ()()
+-----------------------------------------------------------------------------------------------------------------------------
+1   Alfa Romeo  10100111
+
+(0)     
+ 0-->       (0) 
+            (Alfa Romeo)()
+
+- No se toma ningun bit para dispersar la clave Alfa Romeo, osea que hay una sola direccion del nodo disponible
+y debe insertarse en ese. No hay colision ni saturacion por que esta vacio.
+
+-----------------------------------------------------------------------------------------------------------------------------
+2   Peugeot     10101010
+
+(0)     
+ 0-->       (0) 
+            (Alfa Romeo)(Peugeot)
+
+- No se toma ningun bit para dispersar la clave Alfa Romeo, osea que hay una sola direccion del nodo disponible
+y debe insertarse en ese. Se genera colision.
+
+-----------------------------------------------------------------------------------------------------------------------------
+3   Audi        00111110
+
+(1)     
+ 0-->       (1) 
+            (Audi)(Peugeot)
+
+ 1-->       (1) 
+            (Alfa Romeo)()
+
+- No se toma ningun bit para dispersar la clave Audi, osea que hay una sola direccion del nodo disponible
+y debe insertarse en ese, pero ahora el unico nodo disponible tiene su capacidad colmada.
+- Se aumentan en uno el valor asociado al nodo saturado.
+- Se genera un nuevo nodo con el mismo valor asociado al nodo saturado.
+- Se compara el valor del nodo con el valor asociado a la tabla, como el primero es mayor que el segundo
+significa que no dispone de entradas suficientes para direccionar al nuevo nodo. Entonces la cantidad de 
+celdas de la tabla se duplica y el valor asociado a la tabla se incrementa en uno.
+- A partir de este momento es necesario tomar 1 bit de la funcion de hash para direccionar las claves.
+- La primera celda de la tabla direcciona al nodo saturado(0), y la nueva apunta al nuevo nodo generado(1).
+- Se redispersan las claves involucradas.
+
+-----------------------------------------------------------------------------------------------------------------------------
+4   Nissan      01101111
+
+(1)     
+ 0-->       (1) 
+            (Audi)(Peugeot)
+
+ 1-->       (1) 
+            (Alfa Romeo)(Nissan)
+
+- Se toma un bit para dispersar la clave Alfa Romeo, osea que debe insertarse en el nodo direccionado por la celda 1.
+- Se genera colision.
+
+-----------------------------------------------------------------------------------------------------------------------------
+5   BMW         01101011
+
+(3)     
+ 000-->     (1) 
+ 100-->     (Audi)(Peugeot)
+ 010-->
+ 110-->
+
+ 001-->     (2) 
+ 101-->     ()()
+
+ 011-->     (3) 
+            (BMW)() 
+
+ 111-->     (3) 
+            (Alfa Romeo)(Nissan)
+
+- Se toma un bit para dispersar la clave BMW, osea que debe insertarse en el nodo direccionado por la celda 1, 
+pero este tiene su capacidad colmada.
+- Se aumentan en uno el valor asociado al nodo saturado.
+- Se genera un nuevo nodo con el mismo valor asociado al nodo saturado.
+- Se compara el valor del nodo con el valor asociado a la tabla, como el primero es mayor que el segundo
+significa que no dispone de entradas suficientes para direccionar al nuevo nodo. Entonces la cantidad de 
+celdas de la tabla se duplica y el valor asociado a la tabla se incrementa en uno.
+- A partir de este momento es necesario tomar 2 bits de la funcion de hash para direccionar las claves.
+- La celda 01 de la tabla direcciona al nodo saturado, y la celda 11 apunta al nuevo nodo generado.
+- Se redispersan las claves involucradas.
+- Al redispersar se genera nuevamente overflow en el nodo direccionado por la celda 11.
+- Repetimos los pasos anteriores.
+
+-----------------------------------------------------------------------------------------------------------------------------
+6   Toyota      11110000
+
+(3)     
+ 000-->     (2) 
+ 100-->     (Toyota)()
+ 
+ 010-->     (2)
+ 110-->     (Audi)(Peugeot)
+
+
+ 001-->     (2) 
+ 101-->     ()()
+
+ 011-->     (3) 
+            (BMW)()
+
+ 111-->     (3) 
+            (Alfa Romeo)(Nissan)
+
+- Se toma tres bits para dispersar la clave Toyota, osea que debe insertarse en el nodo direccionado por la celda 000, 
+pero este tiene su capacidad colmada.
+- Se aumentan en uno el valor asociado al nodo saturado.
+- Se genera un nuevo nodo con el mismo valor asociado al nodo saturado.
+- Se compara el valor del nodo con el valor asociado a la tabla, como el primero NO es mayor que el segundo
+significa que SI dispone de entradas suficientes para direccionar al nuevo nodo. Entonces la cantidad de 
+celdas de la tabla NO se duplica.
+- Las celdas 000 y 100 de la tabla direcciona al nodo saturado, y las celdas 001 y 110 apuntan al nuevo nodo generado.
+- Se redispersan las claves involucradas.
+
+-----------------------------------------------------------------------------------------------------------------------------
+7   Fiat        01011101
+
+(3)     
+ 000-->     (2) 
+ 100-->     (Toyota)()
+ 
+ 010-->     (2)
+ 110-->     (Audi)(Peugeot)
+
+
+ 001-->     (2) 
+ 101-->     (Fiat)()
+
+ 011-->     (3) 
+            (BMW)()
+
+ 111-->     (3) 
+            (Alfa Romeo)(Nissan)
+
+- Se toma tres bits para dispersar la clave Fiat, osea que debe insertarse en el nodo direccionado por la celda 101.
+- No se genera colision, ya que el nodo esta vacio.
+
+-----------------------------------------------------------------------------------------------------------------------------
+8   Suzuki      01011011
+
+(3)     
+ 000-->     (2) 
+ 100-->     (Toyota)()
+ 
+ 010-->     (2)
+ 110-->     (Audi)(Peugeot)
+
+
+ 001-->     (2) 
+ 101-->     (Fiat)()
+
+ 011-->     (3) 
+            (BMW)(Suzuki)
+
+ 111-->     (3) 
+            (Alfa Romeo)(Nissan)
+
+- Se toma tres bits para dispersar la clave Suzuki, osea que debe insertarse en el nodo direccionado por la celda 011.
+- Se genera colision, ya que el nodo no esta vacio.
+
+-----------------------------------------------------------------------------------------------------------------------------
+9   Ford        00110100
+
+(3)     
+ 000-->     (2) 
+ 100-->     (Toyota)(Ford)
+ 
+ 010-->     (2)
+ 110-->     (Audi)(Peugeot)
+
+
+ 001-->     (2) 
+ 101-->     (Fiat)()
+
+ 011-->     (3) 
+            (BMW)(Suzuki)
+
+ 111-->     (3) 
+            (Alfa Romeo)(Nissan)
+
+- Se toma tres bits para dispersar la clave Ford, osea que debe insertarse en el nodo direccionado por la celda 100.
+- Se genera colision, ya que el nodo no esta vacio.
+
+-----------------------------------------------------------------------------------------------------------------------------
+10 Renault 11100011
+
+(4)          (2)   
+ 0000:       (Toyota)(Ford)
+ 1000:
+ 0100:
+ 1100:   
+
+             (2)
+ 0010:       (Peugeot)(Audi)
+ 0110:
+ 1110:
+ 1010:
+
+             (2)
+ 0001:       (Fiat)()
+ 1001:
+ 0101:
+ 1101:
+
+             (4)
+ 0011:       (Renault)()
+
+             (4)
+ 1011:       (BMW)(Suzuki)
+
+             (3)
+ 0111:       (Alfa Romeo)(Nissan)   
+ 1111:

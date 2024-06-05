@@ -79,7 +79,7 @@ type
                         writeln('idUsuario:',idAct, ' Tiempo Total de acceso en el dia  ',diaAct ,' mes ',mesAct,' es',idtotal:0:2); 
                     end;
                     mestotal:= mestotal + diatotal;
-                    writeln('Tiempo total acceso dia ',diaAct,' mes ',mesAct,' es: ',mestotal:0:2);
+                    writeln('Tiempo total acceso dia ',diaAct,' mes ',mesAct,' es: ',diatotal:0:2);
                 end;
                 aniototal:= aniototal + mestotal;
                 writeln('Total tiempo de acceso mes ',mesAct,' es ',mestotal:0:2);
